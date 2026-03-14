@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro | BabySite</title>
+    <link rel="stylesheet" href="interface_inclusao_responsavel.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+
+        /* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.container {
+    width: 100%;
+    max-width: 450px;
+}
+
+.card-login {
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.superior .logo {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin-bottom: 15px;
+    object-fit: cover;
+    border: 3px solid #6c63ff;
+}
+
+.superior h1 {
+    color: #333;
+    font-size: 1.8rem;
+    margin-bottom: 5px;
+}
+
+.superior p {
+    color: #777;
+    font-size: 0.9rem;
+    margin-bottom: 30px;
+}
+
+/* Estilização dos campos de entrada */
+.form-group {
+    text-align: left;
+    margin-bottom: 18px;
+}
+
+.form-group label {
+    display: block;
+    color: #555;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    margin-left: 5px;
+}
+
+input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #eee;
+    border-radius: 10px;
+    outline: none;
+    transition: all 0.3s;
+    font-size: 0.9rem;
+}
+
+input:focus {
+    border-color: #6c63ff;
+    background-color: #f8f9ff;
+}
+
+/* Botão Estilizado */
+.btn-confirmar {
+    width: 100%;
+    padding: 14px;
+    background-color: #6c63ff;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.3s;
+    margin-top: 10px;
+}
+
+.btn-confirmar:hover {
+    background-color: #5851db;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(108, 99, 255, 0.4);
+}
+
+.btn-confirmar:active {
+    transform: translateY(0);
+}
+    </style>
+</head>
+<body>
+
+    <main class="container">
+        <form class="card-login">
+            <header class="superior">
+                <img src="logo_do_babysite.ico" alt="logo" class="logo">
+                <h1>Bem-vindo!</h1>
+                <p>Crie sua conta como responsável</p>
+            </header>
+
+            <div class="input-area">
+                <div class="form-group">
+                    <label for="pais">Nome do Responsável</label>
+                    <input type="text" id="pais" placeholder="Digite seu nome completo">
+                </div>
+
+                <div class="form-group">
+                    <label for="cpf">CPF</label>
+                    <input type="text" id="cpf" placeholder="000.000.000-00">
+                </div>
+
+                <div class="form-group">
+                    <label for="telefone">Telefone</label>
+                    <input type="tel" id="telefone" placeholder="(00) 00000-0000">
+                </div>
+
+                <div class="form-group">
+                    <label for="email1">E-mail</label>
+                    <input type="email" id="email1" placeholder="seu@email.com">
+                </div>
+
+                <button type="button" onclick="confirmar()" class="btn-confirmar">Confirmar Cadastro</button>
+            </div>
+        </form>
+    </main>
+
+    <script>
+
+function confirmar() {
+    const nome = document.getElementById('pais').value;
+    const email = document.getElementById('email1').value;
+
+    if (nome === "" || email === "") {
+        alert("Por favor, preencha os campos obrigatórios!");
+    } else {
+        alert(`Obrigado, ${nome}! Cadastro realizado com sucesso.`);
+    }
+}
+
+    </script>
+</body>
+</html>

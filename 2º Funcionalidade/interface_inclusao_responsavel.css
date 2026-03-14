@@ -1,0 +1,70 @@
+    .superior{
+        background-color: rgb(223, 145, 0);
+        color: white;
+        padding: 10px;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        
+
+}
+body{
+    margin: 0%;
+    font-family: Arial, sans-serif;
+}
+
+.layout_formulario{
+display: flex;
+justify-content: center;
+align-items: center;
+}
+
+.card-login{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 45px;
+    border-radius: 10px;
+    width: 400px;
+    box-shadow: 0px 8px 20px black;
+    align-items: stretch;
+    margin-top: 15px;
+}
+.card-login input{
+    border: 2px solid black;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+.card-login label{
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+    margin-top: 5px;
+}
+.card-login button{
+    background-color: orange;
+    border: none;
+    padding: 12px 20px;
+    width: 100%;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.card-login button:hover{
+    background-color: #e67e00;
+}
+.card-login button :active{
+    transform: scale(0.98s)
+}
+
+header h1{
+    font-style: italic;
+}
+h1{
+    font-size: 30px;
+    align-items: center;
+}
