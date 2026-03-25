@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="imagem/icon" href="logo_do_babysite.ico">                                    
+    <title>1ºfuncionalidade</title>
+    <style>
+
+        .superior{
+        background-color: rgb(223, 145, 0);
+        color: white;
+        padding: 10px;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        align-items:  flex-start;
+        
+
+}
+        body {
+            background: #f0f2f5; /* Fundo ligeiramente cinza */
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+        }
+
+        .wrapper {
+            /* Largura um pouco maior para acomodar 3 cards paisagem */
+            max-width: 950px;
+            width: 50%;
+            position: relative;
+            padding: 30px 10px; /* Um pouco mais de respiro */
+        }
+
+        .carousel {
+            display: flex; /* Mudamos para flex */
+            gap: 24px; /* O Flexbox moderno também aceita gap perfeitamente! */
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            scrollbar-width: none;
+            padding-bottom: 10px;
+        }
+        
+        /* Responsividade: Em telas menores, mostra 2 cards, depois 1.2 */
+        /* Em telas menores, mostra 2 cards */
+    @media screen and (max-width: 800px) {
+        .card { flex: 0 0 calc((100% / 2) - 16px); }
+    }
+
+        /* Em celulares, mostra praticamente 1 card inteiro */
+    @media screen and (max-width: 550px) {
+        .card { flex: 0 0 calc(100% - 40px); }
+        .carousel { gap: 16px; } /* Diminui um pouco o espaço no celular */
+    }
+
+        .carousel::-webkit-scrollbar { display: none; }
+
+        /* Estilos de Arrastar */
+        .carousel.dragging {
+            scroll-behavior: auto;
+            cursor: grab;
+        }
+        .carousel.dragging .card {
+            cursor: grabbing;
+            user-select: none;
+            pointer-events: none; /* Evita cliques acidentais ao arrastar */
+        }
+
+        /* --- O CARD PAISAGEM --- */
+        .card {
+            display: flex;
+            flex-direction: column; /* Empilha foto e texto verticalmente */
+            background: #fff;
+            border-radius: 12px; /* Bordas arredondadas suaves */
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08); /* Sombra suave */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            user-select: none;
+            flex: 0 0 calc((100% / 3) - 16px);
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.12);
+        }
+
+        /* A FOTO (Formato Paisagem definido pela altura fixa) */
+        .card img {
+            width: 100%;
+            height: 180px; /* <-- ALTURA FIXA define o aspecto paisagem */
+            object-fit: cover; /* Corta a imagem para preencher o espaço sem esticar */
+            pointer-events: none;
+        }
+
+        /* INFORMAÇÕES (Abaixo da foto) */
+        .card-info {
+            padding: 16px;
+            color: #333;
+        }
+
+        .card-info h3 {
+            margin: 0 0 8px 0;
+            font-size: 18px;
+            font-weight: 600;
+            color: #1c1e21;
+        }
+
+        /* Container para alinhar a nota e o subtítulo */
+        .meta-info {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            color: #65676b;
+            gap: 10px;
+        }
+
+        .rating {
+            display: flex;
+            align-items: center;
+            font-weight: bold;
+            color: #1c1e21;
+        }
+        .star { color: #FFD700; font-size: 18px; margin-right: 4px; }
+        .dot { font-size: 8px; color: #ccc;}
+
+        /* Botões de Seta */
+        .arrow-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            height: 44px;
+            width: 44px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 44px;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            z-index: 10;
+            transition: 0.2s;
+            display: flex; align-items: center; justify-content: center;
+            color: #555;
+        }
+        .arrow-btn:hover { background: #f9f9f9; color: #222; border-color: #ccc;}
+        #left { left: -22px; display: none; }
+        #right { right: -22px; }
+
+        .size{
+            align-content: baseline;
+        }
+
+    </style>
+</head>
+<body>
+    <header class="superior">
+        <img src="logo_do_babysite.ico" alt="logo_do_babysite" style="border-radius: 100px; border: 2px solid rgb(119, 0, 255) ";>
+        <h1> Bem vindo ao Babysite!</h1> 
+        <input size="batata" type="search">
+    </header>
+
+<div class="wrapper">
+    <div id="left" class="arrow-btn"><i class="material-icons"><</i></div>
+    
+    <div class="carousel">
+        <div class="card">
+            <img src="baba1.jfif" alt="Babá">
+            <div class="card-info">
+                <h3>Ana Julia</h3>
+                <div class="meta-info">
+                    <span class="rating"><i class="material-icons star">star</i> 4.9</span>
+                    <i class="material-icons dot">fiber_manual_record</i>
+                    <span>24 anos • Bilingue</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <img src="baba2.jfif" alt="Babá">
+            <div class="card-info">
+                <h3>Mariana Costa</h3>
+                <div class="meta-info">
+                    <span class="rating"><i class="material-icons star">star</i> 5.0</span>
+                    <i class="material-icons dot">fiber_manual_record</i>
+                    <span>Enfermagem</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <img src="baba3.jfif" alt="Babá">
+            <div class="card-info">
+                <h3>Carla Diaz</h3>
+                <div class="meta-info">
+                    <span class="rating"><i class="material-icons star">star</i> 4.8</span>
+                    <i class="material-icons dot">fiber_manual_record</i>
+                    <span>+5 anos exp.</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <img src="baba4.jfif" alt="Babá">
+            <div class="card-info">
+                <h3>Beatriz Silva</h3>
+                <div class="meta-info">
+                    <span class="rating"><i class="material-icons star">star</i> 4.7</span>
+                    <i class="material-icons dot">fiber_manual_record</i>
+                    <span>Disponível hoje</span>
+                </div>
+            </div>
+        </div>
+        
+         <div class="card">
+            <img src="baba5.jfif"Babá">
+            <div class="card-info">
+                <h3>Fernanda Lima</h3>
+                <div class="meta-info">
+                    <span class="rating"><i class="material-icons star">star</i> 5.0</span>
+                    <i class="material-icons dot">fiber_manual_record</i>
+                    <span>Pedagoga</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="right" class="arrow-btn"><i class="material-icons">></i></div>
+</div>
+
+
+
+<script>
+    // O Javascript é o mesmo, pois a lógica de arrastar não muda com o visual dos cards
+    const carousel = document.querySelector(".carousel");
+    const arrowBtns = document.querySelectorAll(".arrow-btn");
+    const firstCardWidth = carousel.querySelector(".card").offsetWidth;
+    let isDragging = false, startX, startScrollLeft;
+
+    arrowBtns.forEach(btn => {
+        btn.addEventListener("click", () => {
+            // Rola a largura exata de um card + o espaçamento (gap)
+            const scrollAmount = firstCardWidth + 24; 
+            carousel.scrollLeft += btn.id === "left" ? -scrollAmount : scrollAmount;
+            setTimeout(showHideIcons, 60);
+        });
+    });
+
+    const dragStart = (e) => {
+        isDragging = true;
+        carousel.classList.add("dragging");
+        startX = e.pageX;
+        startScrollLeft = carousel.scrollLeft;
+    }
+
+    const dragging = (e) => {
+        if(!isDragging) return;
+        carousel.scrollLeft = startScrollLeft - (e.pageX - startX);
+        showHideIcons();
+    }
+
+    const dragStop = () => {
+        isDragging = false;
+        carousel.classList.remove("dragging");
+    }
+
+    const showHideIcons = () => {
+        let scrollWidth = carousel.scrollWidth - carousel.clientWidth;
+        arrowBtns[0].style.display = carousel.scrollLeft <= 5 ? "none" : "flex";
+        arrowBtns[1].style.display = Math.ceil(carousel.scrollLeft) >= scrollWidth - 5 ? "none" : "flex";
+    }
+
+    carousel.addEventListener("mousedown", dragStart);
+    carousel.addEventListener("mousemove", dragging);
+    document.addEventListener("mouseup", dragStop);
+    carousel.addEventListener("scroll", () => {
+        if(window.scrollTimeout) clearTimeout(window.scrollTimeout);
+        window.scrollTimeout = setTimeout(showHideIcons, 50);
+    });
+</script>
+
+</body>
+</html>
