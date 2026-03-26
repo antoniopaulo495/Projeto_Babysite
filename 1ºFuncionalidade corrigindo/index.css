@@ -1,0 +1,144 @@
+
+        .superior{
+        background-color: rgb(223, 145, 0);
+        color: white;
+        padding: 10px;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        align-items:  flex-start;
+        
+
+}
+        body {
+            background: #f0f2f5; /* Fundo ligeiramente cinza */
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+        }
+
+        .wrapper {
+            /* Largura um pouco maior para acomodar 3 cards paisagem */
+            max-width: 950px;
+            width: 50%;
+            position: relative;
+            padding: 30px 10px; /* Um pouco mais de respiro */
+        }
+
+        .carousel {
+            display: flex; /* Mudamos para flex */
+            gap: 24px; /* O Flexbox moderno também aceita gap perfeitamente! */
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            scrollbar-width: none;
+            padding-bottom: 10px;
+        }
+        
+        /* Responsividade: Em telas menores, mostra 2 cards, depois 1.2 */
+        /* Em telas menores, mostra 2 cards */
+    @media screen and (max-width: 800px) {
+        .card { flex: 0 0 calc((100% / 2) - 16px); }
+    }
+
+        /* Em celulares, mostra praticamente 1 card inteiro */
+    @media screen and (max-width: 550px) {
+        .card { flex: 0 0 calc(100% - 40px); }
+        .carousel { gap: 16px; } /* Diminui um pouco o espaço no celular */
+    }
+
+        .carousel::-webkit-scrollbar { display: none; }
+
+        /* Estilos de Arrastar */
+        .carousel.dragging {
+            scroll-behavior: auto;
+            cursor: grab;
+        }
+        .carousel.dragging .card {
+            cursor: grabbing;
+            user-select: none;
+            pointer-events: none; /* Evita cliques acidentais ao arrastar */
+        }
+
+        /* --- O CARD PAISAGEM --- */
+        .card {
+            display: flex;
+            flex-direction: column; /* Empilha foto e texto verticalmente */
+            background: #fff;
+            border-radius: 12px; /* Bordas arredondadas suaves */
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08); /* Sombra suave */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            user-select: none;
+            flex: 0 0 calc((100% / 3) - 16px);
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.12);
+        }
+
+        /* A FOTO (Formato Paisagem definido pela altura fixa) */
+        .card img {
+            width: 100%;
+            height: 180px; /* <-- ALTURA FIXA define o aspecto paisagem */
+            object-fit: cover; /* Corta a imagem para preencher o espaço sem esticar */
+            pointer-events: none;
+        }
+
+        /* INFORMAÇÕES (Abaixo da foto) */
+        .card-info {
+            padding: 16px;
+            color: #333;
+        }
+
+        .card-info h3 {
+            margin: 0 0 8px 0;
+            font-size: 18px;
+            font-weight: 600;
+            color: #1c1e21;
+        }
+
+        /* Container para alinhar a nota e o subtítulo */
+        .meta-info {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            color: #65676b;
+            gap: 10px;
+        }
+
+        .rating {
+            display: flex;
+            align-items: center;
+            font-weight: bold;
+            color: #1c1e21;
+        }
+        .star { color: #FFD700; font-size: 18px; margin-right: 4px; }
+        .dot { font-size: 8px; color: #ccc;}
+
+        /* Botões de Seta */
+        .arrow-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            height: 44px;
+            width: 44px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 44px;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            z-index: 10;
+            transition: 0.2s;
+            display: flex; align-items: center; justify-content: center;
+            color: #555;
+        }
+        .arrow-btn:hover { background: #f9f9f9; color: #222; border-color: #ccc;}
+        #left { left: -22px; display: none; }
+        #right { right: -22px; }
+
+        .size{
+            align-content: baseline;
+        }
