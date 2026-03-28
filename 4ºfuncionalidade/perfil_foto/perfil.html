@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Foto de Perfil</title>
+    <link rel="logo_do_babysite" href="../inclusão_babas/interface_inclusao_babas.css" type="image/x-icon">
+    <link rel="stylesheet" href="../inclusão_babas/interface_inclusao_babas.css">
+</head>
+<body>
+    <header class="superior">
+        <img src="../inclusão_babas/logo_do_babysite.ico" alt="logo" style="border-radius: 100px; border: 2px solid rgb(119, 0, 255);">
+        <h1>Foto de Perfil</h1>
+    </header>
+
+    <main class="layout_formulario">
+        <div class="card-login">
+            <h2>Escolha sua melhor foto!</h2>
+            
+            <div id="preview_container" style="margin-bottom: 20px;">
+                <img id="foto_preview" src="#" alt="Sua foto aparecerá aqui" style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 3px solid #7700ff; display: none;">
+            </div>
+
+            <label for="foto_perfil">Selecionar Imagem</label>
+            <input type="file" id="foto_perfil" accept="image/*"><br><br>
+            <button id="SalvarPerfil" type="button">Finalizar Cadastro</button>
+        </div>
+    </main>
+
+    <script src="perfil.js"></script>
+</body>
+</html>
