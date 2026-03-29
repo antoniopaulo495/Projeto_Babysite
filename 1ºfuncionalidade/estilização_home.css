@@ -1,0 +1,247 @@
+ /*- HEADER-------------*/
+ 
+ .superior{
+        background-color: rgb(223, 145, 0);
+        color: white;
+        padding: 10px;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        
+
+}
+body{
+    margin: 0%;
+    font-family: Arial, sans-serif;
+}
+
+
+
+
+
+/* =========================================
+   ESTRUTURA PRINCIPAL DO CARROSSEL
+========================================= */
+
+/* O Wrapper é a "caixa" que segura o carrossel e as setas */
+.wrapper {
+    position: relative;
+    width: 95%; /* Ocupa quase a tela toda */
+    max-width: 1300px; /* Limite máximo para telas gigantes */
+    margin: 40px auto; /* Centraliza na tela */
+    display: flex;
+    align-items: center;
+}
+
+/* O Carrossel é a pista onde os cards deslizam */
+.carousel {
+    display: flex;
+    gap: 24px; /* Espaço exato entre um card e outro */
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    width: 100%;
+    padding: 20px 10px; /* Espaço extra para a sombra do card não ser cortada */
+    
+    /* Esconde a barra de rolagem nativa para ficar mais bonito */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE e Edge */
+}
+.carousel::-webkit-scrollbar {
+    display: none; /* Chrome, Safari e Opera */
+}
+
+/* =========================================
+   ESTILO DOS CARDS (BABÁS)
+========================================= */
+
+.card {
+    flex: 0 0 auto; /* REGRA DE OURO: Impede que o card encolha! */
+    width: 280px; /* Largura fixa de cada card */
+    background: #ffffff;
+    border-radius: 12px;
+    overflow: hidden; /* Garante que a foto respeite as bordas arredondadas */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* Sombra suave */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Animação ao passar o mouse */
+    cursor: pointer;
+}
+
+/* Efeito de "pulo" quando passa o mouse por cima do card */
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.card figure {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* Padronizando o tamanho das fotos */
+.card img {
+    width: 100%;
+    height: 240px; /* Altura fixa para todas as fotos */
+    object-fit: cover; /* Corta a imagem perfeitamente sem amassar */
+    object-position: center top; /* Foca no rosto da pessoa */
+}
+
+/* =========================================
+   TEXTOS E INFORMAÇÕES DO CARD
+========================================= */
+
+.card-info {
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px; /* Espaço entre o nome e as estrelas */
+}
+
+.card-info h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    color: #333333;
+    font-weight: 600;
+}
+
+.meta-info {
+    display: flex;
+    align-items: center; /* Alinha ícones e textos na mesma linha reta */
+    font-size: 0.9rem;
+    color: #666666;
+    gap: 6px;
+}
+
+.rating {
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+    color: #222222;
+}
+
+/* Estilo específico para o ícone de estrela */
+.material-icons.star {
+    color: #FFD700; /* Amarelo ouro */
+    font-size: 1.2rem;
+    margin-right: 4px;
+}
+
+/* Estilo específico para a bolinha separadora */
+.material-icons.dot {
+    font-size: 0.4rem;
+    color: #cccccc;
+}
+
+/* =========================================
+   BOTÕES DE SETA (ESQUERDA E DIREITA)
+========================================= */
+
+.arrow-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%); /* Centraliza perfeitamente no meio da altura */
+    width: 48px;
+    height: 48px;
+    border-radius: 50%; /* Deixa redondinho */
+    background-color: #ffffff;
+    border: 1px solid #eeeeee;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    z-index: 10; /* Garante que a seta fique por CIMA dos cards */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #333333;
+    transition: background 0.2s;
+}
+
+.arrow-btn:hover {
+    background-color: #f8f9fa;
+}
+
+.arrow-btn .material-icons {
+    font-size: 1.8rem; /* Tamanho da setinha dentro do botão */
+}
+
+/* Posicionamento exato de cada botão */
+#left {
+    left: -24px; /* Puxa um pouco para fora do carrossel na esquerda */
+}
+
+#right {
+    right: -24px; /* Puxa um pouco para fora do carrossel na direita */
+}
+
+/* =========================================
+   ESTILO DA BARRA DE PESQUISA
+========================================= */
+#pesquisar {
+    padding: 12px 24px;
+    width: 300px; /* Largura inicial */
+    border: none;
+    border-radius: 30px; /* Deixa as bordas bem arredondadas (estilo pílula) */
+    font-size: 1rem;
+    color: #333333;
+    background-color: #ffffff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* Sombreado leve */
+    transition: all 0.3s ease; /* Faz a animação de crescer ficar suave */
+}
+
+/* Quando o usuário clica dentro para digitar (focus) */
+#pesquisar:focus {
+    outline: none; /* Tira aquela borda preta/azul padrão do navegador */
+    width: 380px; /* A barra cresce um pouquinho para dar destaque */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* A sombra fica mais forte */
+}
+
+/* Muda a cor do texto "Pesquisar" (placeholder) */
+#pesquisar::placeholder {
+    color: #999999;
+    font-style: italic;
+}
+
+/* (Opcional) Tira o "X" padrão que o navegador coloca no input type="search" */
+#pesquisar::-webkit-search-cancel-button {
+    cursor: pointer;
+}
+
+
+
+/* =========================================
+    ESTILO DOS BOTÕES DE CADASTRO
+========================================= */
+
+/* =========================================
+    ESTILO DOS BOTÕES DE CADASTRO
+========================================= */
+
+/* Esse é o truque mágico para empurrar os botões pro canto direito da tela */
+#baba {
+    margin-left: auto; 
+}
+
+/* Estilo visual para os dois botões juntos (já que são parecidos) */
+#baba, #responsavel {
+    padding: 10px 20px;
+    border-radius: 25px; /* Deixa redondinho igual a barra de pesquisa */
+    border: 2px solid #ffffff; /* Borda branca */
+    background-color: rgb(189, 12, 189); /* Fundo transparente */
+    color: #ffffff; /* Texto branco */
+    font-size: 0.95rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-right: 15px; /* Dá um espacinho entre um botão e outro */
+}
+
+/* Tira a margem direita do último botão para ele colar certinho no canto */
+#responsavel {
+    margin-right: 0;
+}
+
+/* Efeito Hover (quando passa o mouse por cima) */
+#baba:hover, #responsavel:hover {
+    background-color: #ffffff; /* O fundo fica branco */
+    color: #d98200; /* A letra fica com a cor laranja do header */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); /* Dá uma leve levantada */
+}
