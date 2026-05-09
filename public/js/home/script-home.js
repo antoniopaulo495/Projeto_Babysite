@@ -97,12 +97,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // ==========================================
     btnBaba?.addEventListener('click', (e) => {
         e.preventDefault();
-        window.location.href = "../html_inclusao_babas/formulario/interface_inclusao_babas.html";
+        window.location.href = "html/html_inclusao_babas/formulario/interface_inclusao_babas.html";
     });
 
     btnResponsavel?.addEventListener('click', (e) => {
         e.preventDefault();
-        window.location.href = "../html_inclusao_respon/interface_inclusao_responsaveis.html";
+        window.location.href = "html/html_inclusao_respon/interface_inclusao_responsaveis.html";
     });
 
     // ==========================================

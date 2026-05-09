@@ -22,6 +22,7 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'public', 'html', 'html_home', 'home.html'));
 });
 
+
 app.listen(PORT, () => {
     console.log(`\n🚀 ==========================================`);
     console.log(`✅ Servidor Babysite ON!`);

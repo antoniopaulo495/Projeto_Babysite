@@ -1,41 +1,45 @@
-// Arquivo: antecedentes_crim.js
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById("form_antecedentes");
 
     if (form) {
         form.addEventListener('submit', function(event) {
-            event.preventDefault(); // Impede o refresh da página
+            event.preventDefault(); 
 
-            // 1. Pega o que já foi salvo na tela de formulário
+            // 1. Pega os dados que vieram do Formulário inicial
+            // Usando 'dados_baba' para bater com o seu script da foto
             const dadosSalvos = window.localStorage.getItem('dados_baba');
+            
             const inputArquivo = document.getElementById('antecedentes_criminais');
             const checkboxTermos = document.getElementById('termo_responsabilidade');
 
+            // Validação de segurança: caso o usuário tente pular etapas
             if (!dadosSalvos) {
                 alert("Erro: Dados iniciais não encontrados. Por favor, volte ao formulário.");
+                window.location.href = "../formulario/interface_inclusao_babas.html";
                 return;
             }
 
+            // Converte o texto da "gaveta" em objeto para adicionar mais coisas
             let dados_completos = JSON.parse(dadosSalvos);
 
-            // 2. Validação: Arquivo OU Checkbox
-            if (inputArquivo.files.length > 0 || checkboxTermos.checked) {
+            // 2. Validação: Verificamos se há arquivo OU se o checkbox foi marcado
+            const temArquivo = inputArquivo && inputArquivo.files.length > 0;
+            const aceitouTermos = checkboxTermos && checkboxTermos.checked;
+
+            if (temArquivo || aceitouTermos) {
                 
-                // Salva o nome do arquivo (se houver) ou registra que aceitou os termos
-                dados_completos.antecedentes_criminais = inputArquivo.files.length > 0 
-                    ? inputArquivo.files[0].name 
+                // 3. Acrescenta a informação sem apagar o que já existia (Nome, CPF, etc)
+                dados_completos.antecedentes_status = temArquivo 
+                    ? `Arquivo enviado: ${inputArquivo.files[0].name}` 
                     : "Termo de responsabilidade aceito"; 
                 
-                // Atualiza o banco local (localStorage)
+                // Salva de volta na mesma etiqueta 'dados_baba'
                 window.localStorage.setItem('dados_baba', JSON.stringify(dados_completos));
                 
-                console.log("Sucesso! Dados atualizados:", dados_completos);
+                console.log("Dados atualizados (Etapa 2 finalizada):", dados_completos);
 
-                // ==========================================================
-                // 3. O CAMINHO DA ÁRVORE REAL:
-                // Você está em: html_inclusao_babas/antecedentes_criminais/
-                // Quer ir para: html_inclusao_babas/perfil_foto/
-                // ==========================================================
+                // 4. Navegação para a última etapa (Foto de Perfil)
+                // O caminho ../ sai de 'antecedentes_criminais' e entra em 'perfil_foto'
                 window.location.href = "../perfil_foto/perfil.html";
 
             } else {
