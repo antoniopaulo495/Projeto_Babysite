@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('form_perfil');
 
     // 1. Lógica para mostrar a foto selecionada (Preview)
-    // O 'e' aqui é o evento de carregamento, e o result é a imagem processada
     if (inputFoto) {
         inputFoto.addEventListener('change', function() {
             const arquivo = this.files[0];
@@ -14,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const leitor = new FileReader();
                 
                 leitor.onload = function(e) {
-                    imgPreview.src = e.target.result; // O tal do "resultado do processo"
+                    imgPreview.src = e.target.result; // O 'e' traz o resultado do processamento
                     imgPreview.style.display = 'block';
                     if (placeholder) placeholder.style.display = 'none';
                 }
@@ -24,41 +23,58 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // 2. Lógica para Finalizar e salvar tudo
+    // 2. Lógica para Finalizar e enviar via HTTP Request
     if (form) {
         form.addEventListener('submit', function(e) {
             e.preventDefault();
 
-            // Pega o que foi acumulado nas telas 1 (Formulário) e 2 (Antecedentes)
+            // Puxa o "pacotão" acumulado (Nome, CPF, Antecedentes)
             const dadosSalvos = window.localStorage.getItem('dados_baba');
             
             if (!dadosSalvos) {
-                alert("Erro: Dados do cadastro não encontrados. Por favor, reinicie o cadastro.");
+                alert("Erro: Dados iniciais não encontrados. Por favor, reinicie o cadastro.");
+                window.location.href = "../formulario/interface_inclusao_babas.html";
                 return;
             }
 
             let dados_completos = JSON.parse(dadosSalvos);
 
-            // 3. Adiciona a informação da foto ao objeto final
-            if (inputFoto && inputFoto.files[0]) {
-                // Salvamos o nome do arquivo e o conteúdo em base64 para o card
-                dados_completos.foto_perfil_nome = inputFoto.files[0].name;
-                dados_completos.foto_base64 = imgPreview.src; 
-                dados_completos.status_cadastro = "Ativa"; // Define um status padrão
+            // 3. Adiciona a foto (em formato Base64 para o servidor conseguir ler)
+            if (imgPreview.src && imgPreview.style.display !== 'none') {
+                dados_completos.foto_base64 = imgPreview.src;
+                dados_completos.nome_arquivo_foto = inputFoto.files[0]?.name || "perfil.jpg";
             } else {
-                alert("Por favor, selecione uma foto de perfil antes de finalizar.");
+                alert("Por favor, selecione uma foto antes de finalizar.");
                 return;
             }
 
-            // 4. Salva a versão FINAL no LocalStorage
-            window.localStorage.setItem('dados_baba', JSON.stringify(dados_completos));
-            
-            console.log("CADASTRO CONCLUÍDO COM SUCESSO!", dados_completos);
-            alert("Parabéns, " + dados_completos.nome + "! Seu perfil foi criado.");
+            console.log("🚀 Enviando dados para o servidor...", dados_completos);
 
-            // 5. Redireciona para a Home
-            // Ajuste o caminho conforme sua pasta (saindo de perfil_foto para a home)
-            window.location.href = "../../html_home/home.html";
+            // 4. REQUEST HTTP (FETCH) - O pedido do professor
+            fetch('http://localhost:3000/api/babas', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(dados_completos) // Transforma o objeto em texto JSON
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert("Parabéns! Cadastro realizado e salvo no servidor.");
+                    
+                    // Limpa a "gaveta" pois o cadastro já foi enviado
+                    window.localStorage.removeItem('dados_baba');
+                    
+                    // Redireciona para a Home
+                    window.location.href = "../../html_home/home.html";
+                } else {
+                    throw new Error("Erro ao salvar os dados no servidor.");
+                }
+            })
+            .catch(error => {
+                console.error("Erro na requisição:", error);
+                alert("O servidor não respondeu. Verifique se o Node.js está rodando.");
+            });
         });
     }
 });

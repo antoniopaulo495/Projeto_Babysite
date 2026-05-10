@@ -29,3 +29,18 @@ app.listen(PORT, () => {
     console.log(`🏠 Site: http://localhost:${PORT}`);
     console.log(`============================================\n`);
 });
+
+
+app.post('/api/babas', (req, res) => {
+    const dadosRecebidos = req.body;
+    // Aqui você usa o FS para escrever no seu JSON
+    console.log("Nova babá cadastrada:", dadosRecebidos.nome);
+    res.status(201).json({ mensagem: "Salvo com sucesso!" });
+});
+
+app.post('/api/responsaveis', (req, res) => {
+    const familia = req.body;
+    console.log("Família recebida:", familia.nome, "com", familia.filhos.length, "filhos.");
+    // Lógica para salvar no responsaveis.json
+    res.status(201).json({ status: "sucesso" });
+});

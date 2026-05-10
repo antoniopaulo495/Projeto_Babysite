@@ -1,0 +1,165 @@
+### ==========================================
+### TESTES DE CADASTRO DE BABÁS (Fluxo Completo)
+### Conforme: inclusao_baba.js -> antecedentes_crim.js -> perfil_foto.js
+### ==========================================
+
+### Babá 1 - Ana Souza (Com arquivo de antecedentes)
+POST http://localhost:3000/api/babas
+Content-Type: application/json
+
+{
+    "nome": "Ana Paula Souza",
+    "cpf": "123.456.789-10",
+    "telefone": "(11) 98888-1111",
+    "email": "anapaula@email.com",
+    "email2": "ana.reserva@email.com",
+    "tipo": "baba",
+    "data_cadastro": "2023-10-27T14:30:00Z",
+    "antecedentes_status": "Arquivo enviado: certidao_negativa.pdf",
+    "foto_perfil_nome": "foto_perfil_ana.jpg",
+    "foto_base64": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...",
+    "status_cadastro": "Ativa"
+}
+
+### Babá 2 - Beatriz Oliva (Com Termo de Responsabilidade)
+POST http://localhost:3000/api/babas
+Content-Type: application/json
+
+{
+    "nome": "Beatriz Oliva",
+    "cpf": "222.333.444-55",
+    "telefone": "(21) 97777-2222",
+    "email": "beatriz.oliva@email.com",
+    "email2": "",
+    "tipo": "baba",
+    "data_cadastro": "2023-10-27T15:00:00Z",
+    "antecedentes_status": "Termo de responsabilidade aceito",
+    "foto_perfil_nome": "selfie_beatriz.png",
+    "foto_base64": "data:image/jpeg;base64,/9j/4AAQSkZJRg...",
+    "status_cadastro": "Ativa"
+}
+
+### Babá 3 - Carla Mendes (Cadastro rápido)
+POST http://localhost:3000/api/babas
+Content-Type: application/json
+
+{
+    "nome": "Carla Mendes",
+    "cpf": "333.444.555-66",
+    "telefone": "(31) 96666-3333",
+    "email": "carla.m@email.com",
+    "email2": "contato@carla.com",
+    "tipo": "baba",
+    "data_cadastro": "2023-10-27T16:15:00Z",
+    "antecedentes_status": "Arquivo enviado: antecedentes_civeis.pdf",
+    "foto_perfil_nome": "perfil_carla_v3.jpg",
+    "foto_base64": "data:image/png;base64,mHBORw0KGgo...",
+    "status_cadastro": "Ativa"
+}
+
+### Babá 4 - Daniela Ferreira
+POST http://localhost:3000/api/babas
+Content-Type: application/json
+
+{
+    "nome": "Daniela Ferreira",
+    "cpf": "444.555.666-77",
+    "telefone": "(41) 95555-4444",
+    "email": "daniela.f@email.com",
+    "email2": "",
+    "tipo": "baba",
+    "data_cadastro": "2023-10-27T17:00:00Z",
+    "antecedentes_status": "Termo de responsabilidade aceito",
+    "foto_perfil_nome": "daniela_foto.jpg",
+    "foto_base64": "data:image/png;base64,iVBORw0KGgo...",
+    "status_cadastro": "Ativa"
+}
+
+---
+
+### ==========================================
+### TESTES DE CADASTRO DE RESPONSÁVEIS
+### Conforme: inclusao_respon.js -> inclusao_filhos.js
+### ==========================================
+
+### Responsável 1 - Ricardo Santos (1 Filho)
+POST http://localhost:3000/api/responsaveis
+Content-Type: application/json
+
+{
+    "nome": "Ricardo Santos",
+    "cpf": "111.222.333-44",
+    "telefone": "(11) 91111-2222",
+    "email_principal": "ricardo.s@email.com",
+    "email_secundario": "financeiro.ricardo@email.com",
+    "tipo_usuario": "Responsável",
+    "filhos": [
+        {
+            "nome": "Enzo Santos",
+            "cpf": "101.202.303-40",
+            "documento_alergia": "laudo_rinite.pdf"
+        }
+    ]
+}
+
+### Responsável 2 - Mariana Lima (2 Filhos)
+POST http://localhost:3000/api/responsaveis
+Content-Type: application/json
+
+{
+    "nome": "Mariana Lima",
+    "cpf": "555.444.333-22",
+    "telefone": "(21) 98888-7777",
+    "email_principal": "mari.lima@email.com",
+    "email_secundario": "",
+    "tipo_usuario": "Responsável",
+    "filhos": [
+        {
+            "nome": "Pedro Lima",
+            "cpf": "222.333.444-55",
+            "documento_alergia": "Nenhum arquivo"
+        },
+        {
+            "nome": "Julia Lima",
+            "cpf": "666.777.888-99",
+            "documento_alergia": "laudo_lactose.pdf"
+        }
+    ]
+}
+
+### Responsável 3 - Fernando Gomes (3 Filhos)
+POST http://localhost:3000/api/responsaveis
+Content-Type: application/json
+
+{
+    "nome": "Fernando Gomes",
+    "cpf": "999.888.777-66",
+    "telefone": "(31) 96666-5555",
+    "email_principal": "fernando.gomes@email.com",
+    "email_secundario": "contato@fernando.com",
+    "tipo_usuario": "Responsável",
+    "filhos": [
+        { "nome": "Arthur", "cpf": "001", "documento_alergia": "Nenhum arquivo" },
+        { "nome": "Davi", "cpf": "002", "documento_alergia": "Nenhum arquivo" },
+        { "nome": "Alice", "cpf": "003", "documento_alergia": "alergia_amendoim.pdf" }
+    ]
+}
+
+### Responsável 4 - Cláudia Rocha (4 Filhos)
+POST http://localhost:3000/api/responsaveis
+Content-Type: application/json
+
+{
+    "nome": "Cláudia Rocha",
+    "cpf": "777.666.555-44",
+    "telefone": "(41) 95555-4444",
+    "email_principal": "claudia.rocha@email.com",
+    "email_secundario": "claudia.trabalho@email.com",
+    "tipo_usuario": "Responsável",
+    "filhos": [
+        { "nome": "Lucas", "cpf": "101", "documento_alergia": "Nenhum arquivo" },
+        { "nome": "Gabriel", "cpf": "102", "documento_alergia": "Nenhum arquivo" },
+        { "nome": "Mateus", "cpf": "103", "documento_alergia": "laudo_asma.pdf" },
+        { "nome": "Tiago", "cpf": "104", "documento_alergia": "Nenhum arquivo" }
+    ]
+}
