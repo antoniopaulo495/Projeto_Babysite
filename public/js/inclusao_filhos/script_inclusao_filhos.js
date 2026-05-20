@@ -41,10 +41,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('CPF').value = "";
                 inputAlergias.value = "";
             } else {
-                // --- INÍCIO DO REQUEST HTTP (O PEDIDO DO PROFESSOR) ---
+                // --- INÍCIO DO REQUEST HTTP ---
                 console.log("🚀 Enviando família completa para o servidor...", familia_completa);
 
-                fetch('http://localhost:3000/api/responsaveis', {
+                fetch('/api/pais', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (response.ok) {
                         alert("Cadastro familiar finalizado e salvo com sucesso!");
                         window.localStorage.removeItem('dados_responsavel'); // Limpa o cache
-                        window.location.href = "../html_home/home.html";
+                      //  window.location.href = "../html_home/home.html";
                     } else {
                         throw new Error("Erro ao salvar no servidor.");
                     }

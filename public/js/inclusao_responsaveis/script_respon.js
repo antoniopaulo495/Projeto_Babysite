@@ -15,8 +15,21 @@ document.addEventListener('DOMContentLoaded', function() {
             const email2Respon = document.getElementById('email2').value;
 
             // 2. Validação simples
-            if (nomeRespon.trim() === "" || cpfRespon.trim() === "") {
-                alert("Por favor, preencha os campos obrigatórios (Nome e CPF).");
+            const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email1Respon);
+            const cpfLimpo = cpfRespon.replace(/\D/g, '');
+
+            if (nomeRespon.trim() === "" || cpfRespon.trim() === "" || email1Respon.trim() === "") {
+                alert("Por favor, preencha os campos obrigatórios (Nome, CPF e Email Principal). ");
+                return;
+            }
+
+            if (!emailValido) {
+                alert("Formato de e-mail principal inválido. Use um endereço como nome@dominio.com.");
+                return;
+            }
+
+            if (cpfLimpo.length !== 11) {
+                alert("CPF inválido. Informe 11 dígitos numéricos.");
                 return;
             }
 
@@ -25,8 +38,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 nome: nomeRespon,
                 cpf: cpfRespon,
                 telefone: telRespon,
-                email_principal: email1Respon,
-                email_secundario: email2Respon,
+                email_1: email1Respon,
+                email_2: email2Respon,
                 tipo_usuario: "Responsável",
                 filhos: [] // Lista que será preenchida na próxima tela
             };

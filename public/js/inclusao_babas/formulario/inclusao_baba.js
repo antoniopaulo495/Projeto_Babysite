@@ -23,11 +23,33 @@ document.addEventListener('DOMContentLoaded', function() {
             data_cadastro: new Date().toISOString()
         };
 
-        // 2. Validação simples antes de prosseguir
-        if (!dados_baba.nome || !dados_baba.email) {
-            alert("Por favor, preencha os campos obrigatórios (Nome e E-mail).");
+        // 2. Validação do formulário antes de prosseguir
+        const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(dados_baba.email);
+        const cpfLimpo = dados_baba.cpf.replace(/\D/g, '');
+        const telefoneLimpo = dados_baba.telefone.replace(/\D/g, '');
+
+        if (!dados_baba.nome || !dados_baba.email || !dados_baba.cpf || !dados_baba.telefone) {
+            alert("Por favor, preencha todos os campos obrigatórios: Nome, CPF, Telefone e E-mail.");
             return;
         }
+
+        if (!emailValido) {
+            alert("Formato de e-mail inválido. Use um endereço como nome@dominio.com.");
+            return;
+        }
+
+        if (cpfLimpo.length !== 11) {
+            alert("CPF inválido. Informe 11 dígitos numéricos.");
+            return;
+        }
+
+        if (telefoneLimpo.length < 10) {
+            alert("Telefone inválido. Informe um número de 10 ou 11 dígitos.");
+            return;
+        }
+
+        dados_baba.cpf = cpfLimpo;
+        dados_baba.telefone = telefoneLimpo;
 
         // 3. Salva localmente (LocalStorage)
         // Isso permite que você recupere esses dados na tela de antecedentes

@@ -1,0 +1,230 @@
+// src/models/babysite_CRUD.js
+
+// CORREÇÃO 1: Apontando para o nome correto do seu arquivo de conexão
+import Database from '../database/database.js';
+
+function generateId(prefix) {
+  return `${prefix}${Date.now().toString().slice(-9)}`;
+}
+
+async function ensureUsuario(db, { usuario_codigo, cpf, email_1, email_2, telefone, nome }) {
+  const codigo = usuario_codigo || `USR${Date.now().toString().slice(-9)}`;
+  if (!cpf || !email_1 || !telefone || !nome) {
+    throw new Error('Dados obrigatórios do usuário ausentes.');
+  }
+  await db.run(
+    `INSERT OR IGNORE INTO usuario (usuario_codigo, cpf, email_1, email_2, telefone, nome) VALUES (?, ?, ?, ?, ?, ?)`,
+    [codigo, cpf, email_1, email_2 || null, telefone, nome]
+  );
+  return codigo;
+}
+
+// 1. CREATE - Cadastrar a base do Usuário
+async function create({ usuario_codigo, cpf, email_1, email_2, telefone, nome }) {
+  const db = await Database.connect();
+
+  if (usuario_codigo && cpf && email_1 && telefone && nome) {
+    const sql = `
+      INSERT INTO usuario (
+        usuario_codigo, cpf, email_1, email_2, telefone, nome
+      ) VALUES (?, ?, ?, ?, ?, ?)
+    `;
+
+    await db.run(sql, [usuario_codigo, cpf, email_1, email_2, telefone, nome]);
+    return await readById(usuario_codigo);
+  } else {
+    throw new Error('Não foi possível criar o usuário. Dados obrigatórios ausentes.');
+  }
+}
+
+// 2. CREATE BABA - Vincula na tabela de babás
+async function createBaba({ codigo_baba, cpf, email, email_1, email_2, telefone, nome, usuario_codigo, foto }) {
+  const db = await Database.connect();
+
+  const usuarioCodigo = await ensureUsuario(db, {
+    usuario_codigo,
+    cpf,
+    email_1: email_1 || email,
+    email_2,
+    telefone,
+    nome,
+  });
+
+  const babaCodigo = codigo_baba || generateId('BAB');
+  const sql = `
+    INSERT INTO baba (
+      codigo_baba, cpf, email_1, email_2, telefone, nome, usuario_codigo, status_cadastro, foto
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `;
+
+  const status_cadastro = 'Ativa';
+  await db.run(sql, [babaCodigo, cpf, email_1 || email, email_2 || null, telefone, nome, usuarioCodigo, status_cadastro, foto || null]);
+  return { success: true, message: 'Babá vinculada com sucesso!', codigo_baba: babaCodigo, usuario_codigo: usuarioCodigo };
+}
+
+// 3. CREATE PAIS - Vincula na tabela de pais
+async function createPais({ codigo_pais, cpf, email_1, email_2, email_principal, email_secundario, telefone, nome, usuario_codigo, filhos = [] }) {
+  const db = await Database.connect();
+
+  const usuarioCodigo = await ensureUsuario(db, {
+    usuario_codigo,
+    cpf,
+    email_1: email_1 || email_principal,
+    email_2: email_2 || email_secundario,
+    telefone,
+    nome,
+  });
+
+  const paisCodigo = codigo_pais || generateId('PAI');
+  const sql = `
+    INSERT INTO pais (
+      codigo_pais, cpf, email_1, email_2, telefone, nome, usuario_codigo
+    ) VALUES (?, ?, ?, ?, ?, ?, ?)
+  `;
+
+  await db.run(sql, [paisCodigo, cpf, email_1, email_2 || null, telefone, nome, usuarioCodigo]);
+
+  if (Array.isArray(filhos) && filhos.length > 0) {
+    const filhoSql = `
+      INSERT INTO filhos (
+        codigo_filhos, cpf, alergias, nome, usuario_codigo
+      ) VALUES (?, ?, ?, ?, ?)
+    `;
+
+    for (const filho of filhos) {
+      const codigoFilho = filho.codigo_filhos || generateId('FIL');
+      await db.run(filhoSql, [
+        codigoFilho,
+        filho.cpf || '00000000000',
+        filho.alergias || filho.documento_alergia || 'Sem alergias',
+        filho.nome || 'Nome não informado',
+        usuarioCodigo,
+      ]);
+    }
+  }
+
+  return { success: true, message: 'Responsável vinculado com sucesso!', codigo_pais: paisCodigo, usuario_codigo: usuarioCodigo };
+}
+
+// CORREÇÃO 2: Adicionando a função para a tabela de Filhos
+async function createFilho({ codigo_filhos, cpf, alergias, nome, usuario_codigo }) {
+  const db = await Database.connect();
+  
+  const filhoCodigo = codigo_filhos || generateId('FIL');
+  const sql = `
+    INSERT INTO filhos (
+      codigo_filhos, cpf, alergias, nome, usuario_codigo
+    ) VALUES (?, ?, ?, ?, ?)
+  `;
+  
+  await db.run(sql, [filhoCodigo, cpf, alergias, nome, usuario_codigo]);
+  return { success: true, message: 'Filho cadastrado com sucesso!', codigo_filhos: filhoCodigo };
+}
+
+// 5. READ - Buscar usuários com filtros dinâmicos ou listar todos
+async function read(field, value) {
+  const db = await Database.connect();
+
+  if (field && value) {
+    const sql = `
+      SELECT usuario_codigo, cpf, email_1, email_2, telefone, nome 
+      FROM usuario WHERE ${field} = ?
+    `;
+    return await db.all(sql, [value]);
+  }
+
+  const sql = `SELECT usuario_codigo, cpf, email_1, email_2, telefone, nome FROM usuario`;
+  return await db.all(sql);
+}
+
+// 6. READ BY ID - Buscar um usuário específico pelo código
+async function readById(usuario_codigo) {
+  const db = await Database.connect();
+
+  if (usuario_codigo) {
+    const sql = `
+      SELECT usuario_codigo, cpf, email_1, email_2, telefone, nome 
+      FROM usuario WHERE usuario_codigo = ?
+    `;
+    const usuario = await db.get(sql, [usuario_codigo]);
+    if (usuario) return usuario;
+    throw new Error('Usuário não encontrado.');
+  }
+  throw new Error('Código do usuário não fornecido.');
+}
+
+// 7. UPDATE - Atualizar os dados de um usuário
+async function update({ usuario_codigo, email_1, email_2, telefone, nome }) {
+  const db = await Database.connect();
+
+  if (usuario_codigo && email_1 && telefone && nome) {
+    const sql = `
+      UPDATE usuario 
+      SET email_1 = ?, email_2 = ?, telefone = ?, nome = ? 
+      WHERE usuario_codigo = ?
+    `;
+    const { changes } = await db.run(sql, [email_1, email_2, telefone, nome, usuario_codigo]);
+    if (changes === 1) return await readById(usuario_codigo);
+    throw new Error('Usuário não encontrado para atualização.');
+  }
+  throw new Error('Dados insuficientes para atualizar o usuário.');
+}
+
+// 8. REMOVE - Excluir um usuário do sistema
+async function remove(usuario_codigo) {
+  const db = await Database.connect();
+
+  if (usuario_codigo) {
+    const sql = `DELETE FROM usuario WHERE usuario_codigo = ?`;
+    const { changes } = await db.run(sql, [usuario_codigo]);
+    if (changes === 1) return true;
+    throw new Error('Usuário não encontrado para exclusão.');
+  }
+  throw new Error('Código do usuário não fornecido para exclusão.');
+}
+
+// 9. REMOVE BABA - Excluir uma babá pelo código
+async function removeBaba(codigo_baba) {
+  const db = await Database.connect();
+
+  if (codigo_baba) {
+    const sql = `DELETE FROM baba WHERE codigo_baba = ?`;
+    const { changes } = await db.run(sql, [codigo_baba]);
+    if (changes === 1) return true;
+    throw new Error('Babá não encontrada para exclusão.');
+  }
+  throw new Error('Código da babá não fornecido para exclusão.');
+}
+
+// 10. READ ALL BABYS (Seu INNER JOIN original para as listagens)
+async function readAllBabys() {
+  const db = await Database.connect();
+  const sql = `
+    SELECT b.codigo_baba,
+           u.nome,
+           u.cpf,
+           COALESCE(b.email_1, u.email_1) AS email,
+           b.telefone,
+           b.foto AS foto_perfil_nome,
+           b.email_2,
+           COALESCE(b.status_cadastro, 'Ativa') AS status_cadastro
+    FROM baba AS b 
+    INNER JOIN usuario AS u ON b.usuario_codigo = u.usuario_codigo 
+    ORDER BY u.nome DESC
+  `;
+  return await db.all(sql);
+}
+
+// Exportando todas as funções
+export default { 
+  create, 
+  createBaba, 
+  createPais,
+  createFilho, // Exportando a função nova
+  read, 
+  readById, 
+  update, 
+  remove, 
+  removeBaba,
+  readAllBabys 
+};

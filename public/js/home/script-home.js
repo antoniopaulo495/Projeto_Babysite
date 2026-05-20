@@ -65,16 +65,46 @@ document.addEventListener('DOMContentLoaded', function() {
                         <span class="d-inline-block text-truncate" style="max-width: 200px;">${baba.email || 'Não informado'}</span>
                     </p>
                     
-                    <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
                         <span class="badge bg-success rounded-pill">${baba.status_cadastro || 'Ativa'}</span>
                         <button class="btn btn-outline-primary btn-sm fw-bold rounded-pill">Ver Perfil</button>
                     </div>
+                    <button class="btn btn-outline-danger btn-sm w-100 fw-bold rounded-pill" data-codigo="${baba.codigo_baba}">Remover</button>
                 </div>
             </div>
         `).join('');
 
-        // Recalcula o carrossel toda vez que renderizamos cards novos
+        adicionarEventosDeExcluir();
         iniciarLogicaCarrossel();
+    }
+
+    async function excluirBaba(codigoBaba) {
+        try {
+            const response = await fetch(`/api/babas/${codigoBaba}`, { method: 'DELETE' });
+            if (!response.ok) {
+                throw new Error('Não foi possível excluir a babá.');
+            }
+            listaOriginal = listaOriginal.filter(baba => String(baba.codigo_baba) !== String(codigoBaba));
+            renderizarBabas(listaOriginal);
+        } catch (erro) {
+            console.error('Erro ao excluir babá:', erro);
+            alert('Ocorreu um erro ao tentar excluir a babá. Tente novamente.');
+        }
+    }
+
+    function adicionarEventosDeExcluir() {
+        const botoesExcluir = carousel.querySelectorAll('button[data-codigo]');
+        botoesExcluir.forEach((botao) => {
+            botao.addEventListener('click', async () => {
+                const codigo = botao.getAttribute('data-codigo');
+                if (!codigo) return;
+
+                const confirmacao = confirm('Tem certeza de que deseja remover esta babá?');
+                if (!confirmacao) return;
+
+                await excluirBaba(codigo);
+            });
+        });
     }
 
     // ==========================================
