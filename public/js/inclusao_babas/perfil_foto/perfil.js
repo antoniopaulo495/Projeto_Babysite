@@ -18,15 +18,23 @@ const transformarImagemEmTexto = (arquivo) => {
   });
 };
 
+let selectedFotoDataUrl = null;
+
 // 🌟 Efeito Visual: Mostra a foto no círculo assim que a babá seleciona o ficheiro
-inputFoto.addEventListener('change', () => {
+inputFoto.addEventListener('change', async () => {
   if (inputFoto.files && inputFoto.files[0]) {
     const arquivo = inputFoto.files[0];
-    
-    // Cria um link temporário para mostrar a imagem na tela antes de enviar
-    fotoPreview.src = URL.createObjectURL(arquivo);
+    selectedFotoDataUrl = await transformarImagemEmTexto(arquivo);
+
+    // Usa a string Base64 para garantir que o preview carregue corretamente
+    fotoPreview.src = selectedFotoDataUrl;
     fotoPreview.style.display = 'block';
     placeholderIcon.style.display = 'none'; // Esconde o bonequinho cinzento 👤
+  } else {
+    selectedFotoDataUrl = null;
+    fotoPreview.style.display = 'none';
+    placeholderIcon.style.display = 'flex';
+    fotoPreview.src = '';
   }
 });
 
@@ -49,11 +57,13 @@ formPerfil.addEventListener('submit', async (event) => {
     const dadosFormulario = JSON.parse(dadosFormularioRaw);
 
     // 2. Captura a imagem selecionada e converte em texto
-    let stringDaFoto = null;
-    if (inputFoto.files.length > 0) {
+    let stringDaFoto = selectedFotoDataUrl;
+    if (!stringDaFoto && inputFoto.files.length > 0) {
       const arquivoSelecionado = inputFoto.files[0];
       stringDaFoto = await transformarImagemEmTexto(arquivoSelecionado);
-    } else {
+    }
+
+    if (!stringDaFoto) {
       alert('Por favor, selecione uma foto de perfil antes de finalizar o seu cadastro!');
       return;
     }
@@ -81,7 +91,7 @@ formPerfil.addEventListener('submit', async (event) => {
     sessionStorage.removeItem('dadosCadastroBaba');
 
     // 6. Redireciona para a página inicial do projeto
-      //  window.location.href = '/';
+        window.location.href = '/';
 
   } catch (error) {
     console.error('❌ Erro crítico ao finalizar cadastro:', error);

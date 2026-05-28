@@ -22,9 +22,9 @@ async function create(resource, data) {
   };
 
   const res = await fetch(url, config);
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.message || 'Erro ao criar o recurso.');
-  return data;
+  const responseData = await res.json();
+  if (!res.ok) throw new Error(responseData.message || 'Erro ao criar o recurso.');
+  return responseData;
 }
 
 /**
@@ -36,9 +36,9 @@ async function read(resource) {
   const url = `${domain}${resource}`;
 
   const res = await fetch(url);
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.message || 'Erro ao obter o recurso.');
-  return data;
+  const responseData = await res.json();
+  if (!res.ok) throw new Error(responseData.message || 'Erro ao obter o recurso.');
+  return responseData;
 }
 
 /**
