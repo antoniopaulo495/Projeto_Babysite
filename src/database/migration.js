@@ -59,6 +59,24 @@ async function up() {
     )
   `);
 
+  // 5. Índices de unicidade para evitar registros duplicados
+  await db.run(`CREATE UNIQUE INDEX IF NOT EXISTS idx_usuario_cpf ON usuario (cpf)`);
+  await db.run(`CREATE UNIQUE INDEX IF NOT EXISTS idx_usuario_email_1 ON usuario (email_1)`);
+  await db.run(`CREATE UNIQUE INDEX IF NOT EXISTS idx_usuario_email_2 ON usuario (email_2)`);
+  await db.run(`CREATE UNIQUE INDEX IF NOT EXISTS idx_usuario_telefone ON usuario (telefone)`);
+
+  await db.run(`CREATE UNIQUE INDEX IF NOT EXISTS idx_baba_cpf ON baba (cpf)`);
+  await db.run(`CREATE UNIQUE INDEX IF NOT EXISTS idx_baba_email_1 ON baba (email_1)`);
+  await db.run(`CREATE UNIQUE INDEX IF NOT EXISTS idx_baba_email_2 ON baba (email_2)`);
+  await db.run(`CREATE UNIQUE INDEX IF NOT EXISTS idx_baba_telefone ON baba (telefone)`);
+
+  await db.run(`CREATE UNIQUE INDEX IF NOT EXISTS idx_pais_cpf ON pais (cpf)`);
+  await db.run(`CREATE UNIQUE INDEX IF NOT EXISTS idx_pais_email_1 ON pais (email_1)`);
+  await db.run(`CREATE UNIQUE INDEX IF NOT EXISTS idx_pais_email_2 ON pais (email_2)`);
+  await db.run(`CREATE UNIQUE INDEX IF NOT EXISTS idx_pais_telefone ON pais (telefone)`);
+
+  await db.run(`CREATE UNIQUE INDEX IF NOT EXISTS idx_filhos_cpf ON filhos (cpf)`);
+
   // Garantir colunas novas (compatibilidade com DB já criado)
   const babaInfo = await db.all(`PRAGMA table_info('baba')`);
   const babaCols = babaInfo.map(c => c.name);
