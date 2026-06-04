@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="icon" type="image/x-icon" href="../../css/logo_do_babysite.ico">
+    
+    <title>Babysite - Home</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
+    <link rel="stylesheet" href="../../css/home/estilizaçao_home.css">
+</head>
+<body class="bg-light">
+
+    <header class="navbar bg-babysite shadow-sm py-2 px-4">
+        <div class="container-fluid d-flex align-items-center">
+            
+            <a href="/" class="navbar-brand d-flex align-items-center">
+                <img src="../../css/logo_do_babysite.ico" alt="Logo" width="45" height="45" class="rounded-circle border border-2 border-white">
+                <h1 class="h4 text-white mb-0 ms-2 d-none d-md-block">Babysite</h1>
+            </a>
+
+            <div class="mx-auto">
+                <input id="pesquisar" class="form-control rounded-pill border-0 shadow-sm" type="search" placeholder="Pesquisar babás...">
+            </div>
+
+            <div class="d-flex gap-2">
+                <button id="baba" type="button" class="btn btn-babysite shadow-sm">Sou Babá</button>
+                <button id="responsavel" type="button" class="btn btn-light rounded-pill fw-bold text-dark shadow-sm">Sou Pai/Mãe</button>
+            </div>
+            
+        </div>
+    </header>
+
+    <main class="container py-5">
+        <div class="position-relative">
+            <button id="left" class="btn btn-light shadow-sm arrow-btn start-0 ms-n3">
+                <i class="material-icons">chevron_left</i>
+            </button>
+            
+            <section id="carousel-container" class="carousel-pista">
+                <p class="text-muted w-100 text-center">Carregando babás...</p>
+            </section>
+
+            <button id="right" class="btn btn-light shadow-sm arrow-btn end-0 me-n3">
+                <i class="material-icons">chevron_right</i>
+            </button>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../../js/home/script-home.js"></script>
+</body>
+</html>
