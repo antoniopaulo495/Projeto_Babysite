@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Babysite | Área da babá</title>
+  <link rel="icon" href="../../imagens/logo_do_babysite.png" type="image/png">
+  <link rel="stylesheet" href="../../css/baba/baba.css">
+  <link rel="stylesheet" href="../../css/areas/agenda.css">
+</head>
+<body>
+  <div class="portal-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="../home/home.html">
+        <span class="brand-mark"><img src="../../imagens/logo_do_babysite.png" alt=""></span>
+        <span><strong>baby</strong>site<small>área profissional</small></span>
+      </a>
+
+      <div class="sidebar-label">NAVEGAÇÃO</div>
+      <nav class="side-nav" aria-label="Menu da babá">
+        <button class="side-link active" data-screen="inicio"><span class="side-icon">⌂</span>Início</button>
+        <button class="side-link" data-screen="perfil"><span class="side-icon">◉</span>Meu perfil</button>
+        <a class="side-link" href="disponibilidade/disponibilidade.html"><span class="side-icon">◷</span>Disponibilidade</a>
+        <button class="side-link" data-screen="documentos"><span class="side-icon">▤</span>Certidão<span class="nav-count alert">1</span></button>
+        <button class="side-link" data-screen="entrevistas"><span class="side-icon">◫</span>Entrevistas<span class="nav-count" id="interviewCount">0</span></button>
+        <button class="side-link" data-screen="contratos"><span class="side-icon">▣</span>Contratos<span class="nav-count" id="contractCount">0</span></button>
+        <button class="side-link" data-screen="conversas"><span class="side-icon">✉</span>Conversas</button>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <a href="../home/home.html" class="back-link">← Voltar para início</a>
+        <div class="profile-user">
+          <span class="user-avatar" id="currentUserAvatar">BA</span>
+          <span><strong id="currentUserNameSidebar">Babá</strong><small id="currentUserEmailSidebar"></small></span>
+          <button class="logout-button" title="Sair" onclick="logout()">↗</button>
+        </div>
+      </div>
+    </aside>
+
+    <main class="workspace">
+      <header class="topbar">
+        <button class="mobile-menu" aria-label="Abrir menu" onclick="document.body.classList.toggle('sidebar-open')">☰</button>
+        <div>
+          <p class="breadcrumb">BABÁ / <strong id="breadcrumbName">INÍCIO</strong></p>
+          <h1 id="screenTitle">Visão geral</h1>
+        </div>
+        <div class="topbar-actions">
+          <button class="notification-button" title="Notificações">◌<i>2</i></button>
+          <span class="date-label">06 set 2026</span>
+        </div>
+      </header>
+
+      <section class="screen active-screen" data-screen-content="inicio">
+        <div class="welcome-row">
+          <div>
+            <p class="eyebrow">CENTRAL PROFISSIONAL</p>
+            <h2>Seu trabalho, <em>do seu jeito.</em></h2>
+            <p class="muted">Organize sua agenda, atualize sua disponibilidade e acompanhe as novas oportunidades.</p>
+          </div>
+          <span class="status-pill pending" id="profileStatus">◉ Perfil em análise</span>
+        </div>
+
+        <div class="metrics">
+          <article>
+            <span>Visualizações do perfil</span>
+            <strong>--</strong>
+            <small>Não disponível no banco</small>
+          </article>
+          <article>
+            <span>Nota média</span>
+            <strong>--</strong>
+            <small>Nenhuma avaliação registrada</small>
+          </article>
+          <article>
+            <span>Solicitações novas</span>
+            <strong>0</strong>
+            <small>Nenhuma solicitação registrada</small>
+          </article>
+          <article class="dark-metric">
+            <span>Tarifa atual</span>
+            <strong id="currentRate">--</strong>
+            <small id="currentRateStatus">Tarifa não cadastrada</small>
+          </article>
+        </div>
+
+        <div class="content-grid">
+          <section class="panel">
+            <div class="panel-heading">
+              <div>
+                <p class="eyebrow">PERFIL PROFISSIONAL</p>
+                <h3>Apresente seu cuidado</h3>
+              </div>
+              <span class="completion">Cadastro básico</span>
+            </div>
+
+            <form class="profile-form" id="profileForm">
+              <label>Tarifa por hora <div class="input-prefix"><span>R$</span><input type="number" placeholder="Não cadastrada" disabled><span>/hora</span></div></label>
+              <label>Experiência <input type="text" placeholder="Não cadastrada" disabled></label>
+              <label class="wide">Sobre você <textarea rows="3" placeholder="Descrição não cadastrada" disabled></textarea></label>
+              <label class="wide upload-field">
+                <span>Certidão de antecedentes criminais</span>
+                <input id="pdfUpload" type="file" accept="application/pdf" disabled>
+                <span class="upload-box"><b>↑</b><span id="fileName">Nenhum documento registrado<br><small>Documento não disponível no cadastro atual</small></span></span>
+                <small class="file-status" id="fileStatus">Nenhum status de documento registrado</small>
+              </label>
+              <button class="primary-button" type="submit" disabled>Salvar alterações</button>
+            </form>
+          </section>
+
+          <section class="panel request-panel">
+            <div class="panel-heading">
+              <div>
+                <p class="eyebrow">AÇÕES PENDENTES</p>
+                <h3>Entrevistas</h3>
+              </div>
+              <span class="count-badge" id="pendingRequestCount">0</span>
+            </div>
+
+            <div id="requestPreview"><p class="muted">Nenhuma solicitação pendente.</p></div>
+          </section>
+        </div>
+      </section>
+
+      <section class="screen" data-screen-content="perfil">
+        <div class="screen-heading">
+          <div>
+            <p class="eyebrow">MEU PERFIL</p>
+            <h2>Atualização do cadastro</h2>
+            <p class="muted">Mantenha informações profissionais e a apresentação do seu perfil sempre alinhadas.</p>
+          </div>
+        </div>
+
+        <section class="panel profile-editor">
+          <form class="profile-form full" id="profileEditForm">
+            <label>Nome completo <input id="profileName" type="text" value="" readonly></label>
+            <label>Tarifa por hora <input id="profileRateInput" type="number" min="1" max="100000" step="0.01" placeholder="Ex.: 45,00"></label>
+            <label>Estado
+              <select id="profileStateInput">
+                <option value="">Selecione o estado</option>
+                <option value="AC">Acre</option><option value="AL">Alagoas</option><option value="AP">Amapá</option>
+                <option value="AM">Amazonas</option><option value="BA">Bahia</option><option value="CE">Ceará</option>
+                <option value="DF">Distrito Federal</option><option value="ES">Espírito Santo</option><option value="GO">Goiás</option>
+                <option value="MA">Maranhão</option><option value="MT">Mato Grosso</option><option value="MS">Mato Grosso do Sul</option>
+                <option value="MG">Minas Gerais</option><option value="PA">Pará</option><option value="PB">Paraíba</option>
+                <option value="PR">Paraná</option><option value="PE">Pernambuco</option><option value="PI">Piauí</option>
+                <option value="RJ">Rio de Janeiro</option><option value="RN">Rio Grande do Norte</option><option value="RS">Rio Grande do Sul</option>
+                <option value="RO">Rondônia</option><option value="RR">Roraima</option><option value="SC">Santa Catarina</option>
+                <option value="SP">São Paulo</option><option value="SE">Sergipe</option><option value="TO">Tocantins</option>
+                <option value="ESTADO_1">estado_1</option><option value="ESTADO_2">estado_2</option><option value="ESTADO_3">estado_3</option>
+                <option value="ESTADO_4">estado_4</option><option value="ESTADO_5">estado_5</option>
+              </select>
+            </label>
+            <label>Município <input id="profileCityInput" type="text" maxlength="100" placeholder="Ex.: São Paulo"></label>
+            <button class="primary-button" type="submit">Salvar perfil</button>
+          </form>
+        </section>
+      </section>
+
+      <section class="screen" data-screen-content="documentos">
+        <div class="screen-heading">
+          <div>
+            <p class="eyebrow">CERTIDÃO</p>
+            <h2>Documentos e validação</h2>
+            <p class="muted">Envie e acompanhe o status da sua certidão de antecedentes antes da publicação do perfil.</p>
+          </div>
+        </div>
+
+        <div class="document-card">
+          <div class="document-top">
+            <span class="file-tag">PDF</span>
+            <span class="status pending">Não cadastrado</span>
+          </div>
+          <h3>Certidão de antecedentes criminais</h3>
+          <p>Nenhum documento registrado no banco de dados.</p>
+          <div class="document-actions">
+            <button class="secondary-button" disabled>Visualizar PDF</button>
+            <button class="primary-button" disabled>Enviar novamente</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" data-screen-content="entrevistas">
+        <div class="screen-heading">
+          <div>
+            <p class="eyebrow">ENTREVISTAS</p>
+            <h2>Agenda e solicitações</h2>
+            <p class="muted">Acompanhe as conversas, confirme horários e mantenha a conversa alinhada com cada família.</p>
+          </div>
+        </div>
+
+        <section class="panel">
+          <div class="panel-heading"><div><p class="eyebrow">SOLICITAÇÕES</p><h3>Pedidos aguardando resposta</h3></div></div>
+          <div id="requestList"><p class="muted">Nenhuma solicitação pendente.</p></div>
+        </section>
+        <section class="panel">
+          <div class="panel-heading"><div><p class="eyebrow">AGENDA</p><h3>Entrevistas aceitas</h3></div></div>
+          <div id="interviewList"><p class="muted">Nenhuma entrevista registrada.</p></div>
+        </section>
+      </section>
+
+      <section class="screen" data-screen-content="contratos">
+        <div class="screen-heading">
+          <div>
+            <p class="eyebrow">CONTRATOS</p>
+            <h2>Contratos aceitos</h2>
+            <p class="muted">Consulte os contratos e finalize o serviço quando o trabalho estiver concluído.</p>
+          </div>
+        </div>
+        <div id="contractList" class="appointment-list"><p class="muted">Nenhum contrato registrado.</p></div>
+      </section>
+
+      <section class="screen" data-screen-content="conversas">
+        <div class="screen-heading">
+          <div>
+            <p class="eyebrow">CONVERSAS</p>
+            <h2>Mensagens recebidas</h2>
+            <p class="muted">Responda de forma ágil e mantenha a comunicação leve e clara com as famílias.</p>
+          </div>
+        </div>
+
+        <div class="chat-shell full-chat">
+          <div class="conversation-list"><p class="muted">Nenhuma conversa registrada.</p></div>
+
+          <div class="chat-window">
+            <div class="chat-top">
+                <span class="avatar coral">--</span>
+              <span>
+                <strong id="chatName">Nenhuma conversa selecionada</strong>
+                <small class="chat-status">Selecione uma conversa</small>
+              </span>
+            </div>
+            <div class="messages large-messages"><p class="muted">Selecione uma conversa para ver as mensagens.</p></div>
+            <form class="message-form" id="messageForm">
+              <input id="messageInput" type="text" placeholder="Selecione uma conversa para enviar mensagens" autocomplete="off" maxlength="4000" disabled>
+              <button class="send-button" aria-label="Enviar mensagem" disabled>↑</button>
+            </form>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" role="status"></div>
+
+  <script src="../../js/baba/baba.js"></script>
+</body>
+</html>

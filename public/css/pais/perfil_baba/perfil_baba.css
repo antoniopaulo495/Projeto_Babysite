@@ -1,0 +1,36 @@
+.profile-page {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 32px 56px;
+}
+
+.profile-page .topbar {
+  gap: 22px;
+}
+
+.back-to-search {
+  flex: 0 0 auto;
+  text-decoration: none;
+}
+
+.profile-user-name {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.profile-content {
+  padding-top: 38px;
+}
+
+@media (max-width: 650px) {
+  .profile-page {
+    padding: 0 17px 35px;
+  }
+
+  .profile-page .topbar {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 18px 0;
+  }
+
+}

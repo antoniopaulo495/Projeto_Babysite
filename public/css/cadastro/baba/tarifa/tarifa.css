@@ -1,0 +1,54 @@
+.rate-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(125px, 1fr));
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.rate-options legend {
+  float: none;
+  width: auto;
+}
+
+.rate-option {
+  position: relative;
+  display: flex;
+  min-height: 74px;
+  align-items: center;
+  gap: 9px;
+  padding: 12px;
+  border: 1px solid #e2ddd4;
+  border-radius: 5px;
+  background: #fffdf9;
+  cursor: pointer;
+}
+
+.rate-option:has(input:checked) {
+  border-color: var(--coral);
+  background: #fff4ef;
+}
+
+.rate-option input {
+  accent-color: var(--coral);
+}
+
+.rate-option span {
+  font-weight: 700;
+}
+
+.rate-option small {
+  display: block;
+  color: #68747a;
+  font-size: .75rem;
+  font-weight: 400;
+}
+
+#customRate:disabled {
+  background: #f1efea;
+}
+
+#rateError:empty {
+  display: none;
+}

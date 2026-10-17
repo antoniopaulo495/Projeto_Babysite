@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Babysite conecta famílias e babás verificadas com segurança.">
+  <title>Babysite | Cuidado que aproxima</title>
+  <link rel="icon" href="../../imagens/logo_do_babysite.png" type="image/png">
+  <link rel="stylesheet" href="../../css/home/home.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="#" onclick="showView('home'); return false;" aria-label="Voltar para a página inicial">
+      <span class="brand-mark"><img src="../../imagens/logo_do_babysite.png" alt=""></span>
+      <span><strong>baby</strong>site<small>cuidado que aproxima</small></span>
+    </a>
+    <div class="header-actions">
+      <button class="text-button" onclick="openAuth('login')">Entrar</button>
+      <a class="button button-coral" href="../cadastro/cadastro.html">Criar conta <span aria-hidden="true">&#8599;</span></a>
+      <button class="menu-button" aria-label="Abrir menu" onclick="document.body.classList.toggle('menu-open')">&#9776;</button>
+    </div>
+  </header>
+
+  <main>
+    <section id="view-home" class="view active-view">
+      <div class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">UMA REDE DE CONFIANÇA</p>
+          <h1>O cuidado certo para cada <em>família.</em></h1>
+          <p class="hero-text">Encontre profissionais verificadas, converse com tranquilidade e combine cada detalhe antes do primeiro encontro.</p>
+          <div class="hero-actions">
+            <button class="button button-dark" onclick="document.getElementById('directory').scrollIntoView({behavior:'smooth'})">Explorar profissionais <span>&#8594;</span></button>
+            <span class="trusted"><span class="trusted-dot">&#10003;</span> perfis verificados</span>
+          </div>
+        </div>
+        <div class="hero-art" aria-label="Família em um momento de cuidado">
+          <div class="sun-shape"></div><div class="hero-figure figure-one" id="heroSitterOne">--</div><div class="hero-figure figure-two" id="heroSitterTwo">--</div>
+          <div class="hero-note"><strong id="activeSitterCount">0</strong><span>babás ativas</span></div>
+          <div class="hero-caption"><span>Conexões que<br><strong>fazem sentido.</strong></span><span class="caption-arrow">&#8599;</span></div>
+        </div>
+      </div>
+
+      <div class="trust-strip"><span><strong id="trustSitterCount">0</strong> babás ativas</span><span><strong>Dados reais</strong> do cadastro</span><span><strong>Status atual</strong> de cada perfil</span><span class="strip-note">Seu próximo capítulo começa aqui.</span></div>
+
+      <div class="section-heading" id="directory"><div><p class="eyebrow">ENCONTRE COM CALMA</p><h2>Profissionais perto de você</h2></div><span class="result-count" id="resultCount">0 perfis disponíveis</span></div>
+      <div class="filter-bar">
+        <label class="search-field"><span>&#9906;</span><input id="searchInput" type="search" placeholder="Nome da profissional" oninput="applyFilters()"></label>
+        <label><span>Estado</span><select id="ufFilter" onchange="updateCityOptions(); applyFilters()"><option value="">Todos os estados</option></select></label>
+        <label><span>Município</span><select id="cityFilter" onchange="applyFilters()" disabled><option value="">Todos os municípios</option></select></label>
+        <label><span>Tarifa por hora</span><input id="priceFilter" type="number" min="1" step="0.01" placeholder="Valor máximo (R$)" oninput="applyFilters()"></label>
+        <fieldset class="availability-filter">
+          <legend>Disponibilidade · escolha um ou mais dias</legend>
+          <label><input type="checkbox" name="availabilityFilter" value="segunda" onchange="applyFilters()"> Segunda-feira</label>
+          <label><input type="checkbox" name="availabilityFilter" value="terca" onchange="applyFilters()"> Terça-feira</label>
+          <label><input type="checkbox" name="availabilityFilter" value="quarta" onchange="applyFilters()"> Quarta-feira</label>
+          <label><input type="checkbox" name="availabilityFilter" value="quinta" onchange="applyFilters()"> Quinta-feira</label>
+          <label><input type="checkbox" name="availabilityFilter" value="sexta" onchange="applyFilters()"> Sexta-feira</label>
+          <label><input type="checkbox" name="availabilityFilter" value="sabado" onchange="applyFilters()"> Sábado</label>
+        </fieldset>
+      </div>
+      <div class="profile-grid" id="profileGrid"></div>
+    </section>
+
+    <section id="view-parent" class="view dashboard-view">
+      <div class="dashboard-intro"><div><p class="eyebrow">ESPAÇO DA FAMÍLIA</p><h1>Olá, Carlos <em>bonito ver você por aqui.</em></h1><p>Encontre profissionais e acompanhe suas conversas em um só lugar.</p></div><span class="status-pill good">&#10003; Conta verificada</span></div>
+      <div class="metric-row"><div class="metric"><span>Conversas ativas</span><strong>2</strong></div><div class="metric"><span>Próxima entrevista</span><strong>15 <small>OUT</small></strong></div><div class="metric accent-metric"><span>Seu nível de confiança</span><strong>Alto</strong></div></div>
+      <aside class="panel compact-panel"><p class="eyebrow">LEMBRETE</p><h2>Uma conversa pode mudar tudo.</h2><p>Agende uma entrevista antes de confirmar a primeira contratação.</p><button class="button button-dark full-button" onclick="openModal('interviewModal')">Agendar entrevista &#8594;</button></aside>
+      <section class="panel chat-panel"><div class="panel-heading"><div><p class="eyebrow">CONVERSAS</p><h2>Fale com suas profissionais</h2></div><span class="online-label"><i></i> 1 online agora</span></div><div class="chat-shell"><div class="conversation-list"><button class="conversation active" onclick="selectConversation('Luciana Silva', this)"><span class="avatar coral">LS<i></i></span><span><strong>Luciana Silva</strong><small>Confirmado para amanhã</small></span><b>2</b></button><button class="conversation" onclick="selectConversation('Ana Maria', this)"><span class="avatar teal">AM</span><span><strong>Ana Maria</strong><small>Olá, tenho interesse!</small></span></button></div><div class="chat-window"><div class="chat-top"><span class="avatar coral">LS<i></i></span><span><strong id="chatName">Luciana Silva</strong><small>Babá verificada · responde rápido</small></span><div class="chat-actions"><button class="button button-outline" onclick="openModal('interviewModal')">Agendar entrevista</button><button class="button button-coral" onclick="openModal('reviewModal')">Avaliar serviço</button></div></div><div class="messages" id="messages"><div class="message received">Oi, Carlos! Podemos conversar na quinta à tarde?</div><div class="message sent">Perfeito, Luciana. Vou enviar o convite por aqui.</div><div class="message received">Combinado. Até lá!</div></div><form class="message-form" onsubmit="sendMessage(event)"><input id="messageInput" placeholder="Escreva uma mensagem..." autocomplete="off"><button class="send-button" aria-label="Enviar mensagem">&#8593;</button></form></div></div></section>
+    </section>
+
+    <section id="view-babysitter" class="view dashboard-view"><div class="dashboard-intro"><div><p class="eyebrow">CENTRAL PROFISSIONAL</p><h1>Seu trabalho, <em>do seu jeito.</em></h1><p>Organize sua agenda, mostre sua experiência e escolha as conexões que combinam com você.</p></div><span class="status-pill pending">&#9679; Perfil em análise</span></div><div class="metric-row"><div class="metric"><span>Visualizações do perfil</span><strong>248</strong></div><div class="metric"><span>Nota média</span><strong>4.9 <small class="stars">&#9733;</small></strong></div><div class="metric"><span>Solicitações novas</span><strong>3</strong></div><div class="metric accent-metric"><span>Tarifa atual</span><strong>R$ 45<small>/hora</small></strong></div></div><div class="dashboard-columns sitter-columns"><section class="panel"><div class="panel-heading"><div><p class="eyebrow">PERFIL PROFISSIONAL</p><h2>Apresente seu cuidado</h2></div><span class="completion">80% completo</span></div><form class="profile-form" onsubmit="saveSitter(event)"><label>Tarifa por hora <div class="input-prefix"><span>R$</span><input id="sitterRate" type="number" value="45" min="1"><span>/hora</span></div></label><label>Experiência <input value="18 meses"></label><label class="wide">Sobre você <textarea rows="3">Cuido de cada criança com presença, responsabilidade e afeto.</textarea></label><label class="wide upload-field"><span>Certidão de antecedentes criminais (PDF)</span><input id="pdfUpload" type="file" accept="application/pdf" onchange="showFile(this)"><span class="upload-box"><b>&#8593;</b><span id="fileName">Clique para enviar seu documento<br><small>PDF até 10 MB</small></span></span><small class="file-status" id="fileStatus">&#10003; Documento aprovado pela administração</small></label><button class="button button-dark" type="submit">Salvar alterações &#8594;</button></form></section><section class="panel request-panel"><div class="panel-heading"><div><p class="eyebrow">AÇÕES PENDENTES</p><h2>Entrevistas</h2></div><span class="count-badge">3</span></div><div class="request-item"><span class="avatar coral">CE</span><div><strong>Carlos Eduardo</strong><small>15/10/2026 · 14:00</small><span>Conversa sobre rotina escolar</span></div><div class="request-actions"><button class="approve-button" onclick="updateRequest(this, 'Aceita')">Aceitar</button><button class="decline-button" onclick="updateRequest(this, 'Recusada')">Recusar</button></div></div><div class="request-item"><span class="avatar gold">MR</span><div><strong>Mariana Reis</strong><small>18/10/2026 · 09:30</small><span>Entrevista por vídeo</span></div><div class="request-actions"><button class="approve-button" onclick="updateRequest(this, 'Aceita')">Aceitar</button><button class="decline-button" onclick="updateRequest(this, 'Recusada')">Recusar</button></div></div></section></div></section>
+
+    <section id="view-admin" class="view dashboard-view"><div class="dashboard-intro admin-intro"><div><p class="eyebrow">VISÃO ADMINISTRATIVA</p><h1>Modere com <em>responsabilidade.</em></h1><p>Uma visão clara para manter a rede segura, ativa e confiável.</p></div><span class="status-pill good">Sistema operacional</span></div><div class="metric-row"><div class="metric"><span>Usuários ativos</span><strong>1.284</strong></div><div class="metric"><span>Certidões pendentes</span><strong>08</strong></div><div class="metric"><span>Denúncias abertas</span><strong>02</strong></div><div class="metric accent-metric"><span>Índice de segurança</span><strong>98%</strong></div></div><section class="panel admin-panel"><div class="panel-heading"><div><p class="eyebrow">CONTROLE DA REDE</p><h2>Usuários e documentos</h2></div><label class="table-search">&#9906;<input placeholder="Buscar usuário" oninput="filterUsers(this.value)"></label></div><div class="table-wrap"><table class="admin-table"><thead><tr><th>Usuário</th><th>Perfil</th><th>Documento</th><th>Cadastro</th><th>Status</th><th>Ações</th></tr></thead><tbody id="usersBody"><tr><td><strong>Luciana Silva</strong><small>luciana@email.com</small></td><td>Babá</td><td><span class="doc-ok">&#10003; Aprovado</span></td><td>02 out 2026</td><td><span class="status-pill tiny good">Ativo</span></td><td><button class="action-link" onclick="moderate(this)">Moderar</button><button class="action-link danger" onclick="banUser(this)">Banir</button></td></tr><tr><td><strong>Mariana Ramos</strong><small>mariana@email.com</small></td><td>Babá</td><td><span class="doc-pending">&#9679; Aguardando análise</span></td><td>05 out 2026</td><td><span class="status-pill tiny pending">Pendente</span></td><td><button class="action-link approve" onclick="approveDocument(this)">Aprovar PDF</button><button class="action-link danger" onclick="banUser(this)">Banir</button></td></tr><tr><td><strong>Carolina Alves</strong><small>carolina@email.com</small></td><td>Responsável</td><td><span class="doc-na">Não se aplica</span></td><td>06 out 2026</td><td><span class="status-pill tiny good">Ativo</span></td><td><button class="action-link" onclick="moderate(this)">Moderar</button><button class="action-link danger" onclick="banUser(this)">Banir</button></td></tr></tbody></table></div></section></section>
+  </main>
+
+  <div class="toast" id="toast" role="status"></div>
+  <div class="modal-backdrop" id="authModal"><div class="modal"><button class="modal-close" onclick="closeModal('authModal')">&times;</button><p class="eyebrow">BEM-VINDO AO BABYSITE</p><h2 id="authTitle">Entre para continuar</h2><p id="authDescription">Acesse mensagens, perfis completos e agendamentos seguros.</p><div class="auth-tabs"><button class="auth-tab active" onclick="setAuthMode('login')">Entrar</button><button class="auth-tab" onclick="setAuthMode('register')">Criar conta</button></div><form onsubmit="completeAuth(event)"><label>Seu e-mail<input type="email" required placeholder="voce@email.com"></label><label>Senha<input type="password" required placeholder="Digite sua senha"></label><button class="button button-dark full-button" type="submit">Continuar <span>&#8594;</span></button></form><small class="modal-foot">Ao continuar, você concorda com nossos termos de uso.</small></div></div>
+  <div class="modal-backdrop" id="interviewModal"><div class="modal"><button class="modal-close" onclick="closeModal('interviewModal')">&times;</button><p class="eyebrow">NOVA CONVERSA</p><h2>Agendar entrevista</h2><p>Escolha um horário para conhecer melhor a profissional.</p><form onsubmit="submitModal(event, 'Solicitação enviada para Luciana!')"><label>Data<input type="date" required></label><label>Horário<input type="time" required></label><label>Mensagem<textarea rows="3" placeholder="Escreva uma mensagem para a profissional..."></textarea></label><button class="button button-dark full-button">Enviar convite &#8594;</button></form></div></div>
+  <div class="modal-backdrop" id="reviewModal"><div class="modal"><button class="modal-close" onclick="closeModal('reviewModal')">&times;</button><p class="eyebrow">SUA EXPERIÊNCIA</p><h2>Avaliar serviço</h2><p>Seu relato ajuda outras famílias a escolherem com confiança.</p><form onsubmit="submitModal(event, 'Avaliação registrada. Obrigado!')"><div class="star-picker" aria-label="Escolha uma nota"><button type="button" onclick="setRating(1)">&#9733;</button><button type="button" onclick="setRating(2)">&#9733;</button><button type="button" onclick="setRating(3)">&#9733;</button><button type="button" onclick="setRating(4)">&#9733;</button><button type="button" onclick="setRating(5)">&#9733;</button></div><label>Comentário<textarea rows="3" placeholder="Como foi a experiência?"></textarea></label><button class="button button-dark full-button">Enviar avaliação &#8594;</button></form></div></div>
+
+  <script>
+    let babysitters = [];
+    const profileColors = ['coral', 'teal', 'gold'];
+    let currentRole = 'guest';
+    let authMode = 'login';
+    function escapeHTML(value) { return String(value ?? '').replace(/[&<>"']/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character]); }
+    function initials(name) { return name.split(/\s+/).slice(0, 2).map((part) => part[0] || '').join('').toUpperCase(); }
+    const stateNames = { AC: 'Acre', AL: 'Alagoas', AP: 'Amapá', AM: 'Amazonas', BA: 'Bahia', CE: 'Ceará', DF: 'Distrito Federal', ES: 'Espírito Santo', GO: 'Goiás', MA: 'Maranhão', MT: 'Mato Grosso', MS: 'Mato Grosso do Sul', MG: 'Minas Gerais', PA: 'Pará', PB: 'Paraíba', PR: 'Paraná', PE: 'Pernambuco', PI: 'Piauí', RJ: 'Rio de Janeiro', RN: 'Rio Grande do Norte', RS: 'Rio Grande do Sul', RO: 'Rondônia', RR: 'Roraima', SC: 'Santa Catarina', SP: 'São Paulo', SE: 'Sergipe', TO: 'Tocantins', ESTADO_1: 'estado_1', ESTADO_2: 'estado_2', ESTADO_3: 'estado_3', ESTADO_4: 'estado_4', ESTADO_5: 'estado_5' };
+    const dayNames = { segunda: 'Segunda-feira', terca: 'Terça-feira', quarta: 'Quarta-feira', quinta: 'Quinta-feira', sexta: 'Sexta-feira', sabado: 'Sábado' };
+    function renderProfiles(list = babysitters) {
+      const grid = document.getElementById('profileGrid');
+      document.getElementById('resultCount').textContent = `${list.length} perfil${list.length === 1 ? '' : 'is'} disponível${list.length === 1 ? '' : 'is'}`;
+      document.getElementById('activeSitterCount').textContent = babysitters.length;
+      document.getElementById('trustSitterCount').textContent = babysitters.length;
+      document.getElementById('heroSitterOne').textContent = list[0] ? initials(list[0].nome) : '--';
+      document.getElementById('heroSitterTwo').textContent = list[1] ? initials(list[1].nome) : '--';
+      grid.innerHTML = list.length ? list.map((person, index) => {
+        const location = [person.municipio, person.estado].filter(Boolean).join(' · ') || 'Localização não informada';
+        const rate = Number.isFinite(Number(person.tarifa_hora)) && person.tarifa_hora !== null
+          ? `R$ ${Number(person.tarifa_hora).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}<small>/hora</small>`
+          : 'Tarifa não informada';
+        const days = (person.disponibilidade || []).map((item) => dayNames[item.dia_semana]).filter(Boolean);
+        const availability = days.length ? days.join(' · ') : 'Disponibilidade não informada';
+        return `<article class="profile-card" data-profile-name="${escapeHTML(person.nome)}"><div class="profile-cover ${profileColors[index % profileColors.length]}"><span class="profile-initials">${escapeHTML(initials(person.nome))}</span><span class="verified">&#10003; ${escapeHTML(person.status_cadastro)}</span></div><div class="profile-content"><div class="profile-title"><div><h3>${escapeHTML(person.nome)}</h3><p>${escapeHTML(location)}</p></div><span class="profile-rate">${rate}</span></div><div class="profile-tags"><span>Perfil profissional</span><span>${escapeHTML(availability)}</span></div><button class="profile-cta">Ver perfil <span>&#8594;</span></button></div></article>`;
+      }).join('') : '<div class="empty-state">Nenhuma profissional encontrada.</div>';
+      grid.querySelectorAll('[data-profile-name]').forEach((card) => card.addEventListener('click', () => openProfile(card.dataset.profileName)));
+    }
+    function updateCityOptions() {
+      const state = document.getElementById('ufFilter').value;
+      const citySelect = document.getElementById('cityFilter');
+      const previousCity = citySelect.value;
+      const fictionalCities = ['municipio_1', 'municipio_2', 'municipio_3', 'municipio_4', 'municipio_5'];
+      const cities = [...new Set([
+        ...fictionalCities,
+        ...babysitters.filter((person) => !state || person.estado === state).map((person) => person.municipio).filter(Boolean)
+      ])].sort((a, b) => a.localeCompare(b, 'pt-BR'));
+      citySelect.innerHTML = '<option value="">Todos os municípios</option>' + cities.map((city) => `<option value="${escapeHTML(city)}">${escapeHTML(city)}</option>`).join('');
+      citySelect.disabled = false;
+      if (cities.includes(previousCity)) citySelect.value = previousCity;
+    }
+    function populateLocationFilters() {
+      const stateSelect = document.getElementById('ufFilter');
+      const fictionalStates = ['ESTADO_1', 'ESTADO_2', 'ESTADO_3', 'ESTADO_4', 'ESTADO_5'];
+      const states = [...new Set([...fictionalStates, ...babysitters.map((person) => person.estado).filter(Boolean)])].sort();
+      stateSelect.innerHTML = '<option value="">Todos os estados</option>' + states.map((state) => `<option value="${escapeHTML(state)}">${escapeHTML(stateNames[state] ? `${stateNames[state]} (${state})` : state)}</option>`).join('');
+      updateCityOptions();
+    }
+    function applyFilters() {
+      const query = document.getElementById('searchInput').value.trim().toLocaleLowerCase('pt-BR');
+      const state = document.getElementById('ufFilter').value;
+      const city = document.getElementById('cityFilter').value;
+      const maxRateValue = document.getElementById('priceFilter').value;
+      const maxRate = maxRateValue === '' ? null : Number(maxRateValue);
+      const selectedDays = [...document.querySelectorAll('[name="availabilityFilter"]:checked')].map((field) => field.value);
+      renderProfiles(babysitters.filter((person) => {
+        const searchMatch = !query || person.nome.toLocaleLowerCase('pt-BR').includes(query);
+        const stateMatch = !state || person.estado === state;
+        const cityMatch = !city || person.municipio === city;
+        const rate = Number(person.tarifa_hora);
+        const rateMatch = maxRate === null || (Number.isFinite(rate) && person.tarifa_hora !== null && rate <= maxRate);
+        const personDays = new Set((person.disponibilidade || []).map((item) => item.dia_semana));
+        const availabilityMatch = selectedDays.every((day) => personDays.has(day));
+        return searchMatch && stateMatch && cityMatch && rateMatch && availabilityMatch;
+      }));
+    }
+    async function loadBabysitters() { const grid = document.getElementById('profileGrid'); try { const response = await fetch('/api/babas'); if (!response.ok) throw new Error('Não foi possível carregar os perfis.'); babysitters = await response.json(); populateLocationFilters(); applyFilters(); } catch (error) { grid.innerHTML = '<div class="empty-state">Não foi possível carregar os perfis agora.</div>'; document.getElementById('resultCount').textContent = 'Perfis indisponíveis'; } }
+    function showView(view) { document.querySelectorAll('.view').forEach((item) => item.classList.remove('active-view')); document.getElementById(`view-${view}`).classList.add('active-view'); document.querySelectorAll('.nav-link').forEach((item) => item.classList.toggle('active', item.dataset.view === view)); currentRole = view; window.scrollTo({ top: 0, behavior: 'smooth' }); }
+    function openProfile(name) { if (currentRole === 'guest') { openAuth('login'); return; } if (currentRole === 'parent') { showView('parent'); selectConversation(name, document.querySelector('.conversation')); } else { showToast(`Perfil de ${name} aberto para visualização.`); } }
+    function openAuth(mode) { setAuthMode(mode); openModal('authModal'); }
+    function setAuthMode(mode) { authMode = mode; document.getElementById('authTitle').textContent = mode === 'login' ? 'Entre para continuar' : 'Crie sua conta'; document.getElementById('authDescription').textContent = mode === 'login' ? 'Acesse mensagens, perfis completos e agendamentos seguros.' : 'Escolha cuidado com mais informação, confiança e proximidade.'; document.querySelectorAll('.auth-tab').forEach((tab, index) => tab.classList.toggle('active', (mode === 'login' && index === 0) || (mode === 'register' && index === 1))); }
+    async function completeAuth(event) { event.preventDefault(); if (authMode === 'register') { window.location.href = '../cadastro/cadastro.html'; return; } const form = event.currentTarget; const inputs = form.querySelectorAll('input'); try { const response = await fetch('/api/sessao', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: inputs[0].value, senha: inputs[1].value }) }); const result = await response.json(); if (!response.ok) throw new Error(result.erro || 'Não foi possível entrar.'); const role = result.perfil.tipo_usuario; const account = JSON.parse(localStorage.getItem(`babysite_${role}`) || '{}'); account.usuario_codigo = result.perfil.usuario_codigo; account.codigo_perfil = result.perfil.codigo_perfil; account.nome = result.perfil.nome; account.email = result.perfil.email_1; localStorage.setItem(`babysite_${role}`, JSON.stringify(account)); localStorage.setItem('babysite_token', result.token); closeModal('authModal'); window.location.href = role === 'baba' ? '../baba/home-baba.html' : '../pais/home-pais.html'; } catch (error) { showToast(error.message); } }
+    function openModal(id) { document.getElementById(id).classList.add('is-open'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('is-open'); }
+    function submitModal(event, message) { event.preventDefault(); closeModal(event.target.closest('.modal-backdrop').id); showToast(message); }
+    function showToast(message) { const toast = document.getElementById('toast'); toast.textContent = message; toast.classList.add('visible'); setTimeout(() => toast.classList.remove('visible'), 3200); }
+    function selectConversation(name, element) { document.getElementById('chatName').textContent = name; document.querySelectorAll('.conversation').forEach((item) => item.classList.remove('active')); if (element) element.classList.add('active'); }
+    function sendMessage(event) { event.preventDefault(); const input = document.getElementById('messageInput'); if (!input.value.trim()) return; const message = document.createElement('div'); message.className = 'message sent'; message.textContent = input.value.trim(); document.getElementById('messages').appendChild(message); input.value = ''; document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight; }
+    function setRating(value) { document.querySelectorAll('.star-picker button').forEach((button, index) => button.classList.toggle('selected', index < value)); }
+    function saveSitter(event) { event.preventDefault(); showToast('Perfil profissional atualizado.'); }
+    function showFile(input) { if (input.files[0]) { document.getElementById('fileName').innerHTML = `${input.files[0].name}<br><small>Documento selecionado</small>`; document.getElementById('fileStatus').textContent = 'Documento pronto para análise'; document.getElementById('fileStatus').className = 'file-status pending-text'; } }
+    function updateRequest(button, status) { const item = button.closest('.request-item'); item.classList.add('request-closed'); item.querySelector('.request-actions').innerHTML = `<span class="request-status">${status}</span>`; showToast(`Entrevista ${status.toLowerCase()}.`); }
+    function approveDocument(button) { const row = button.closest('tr'); row.querySelector('.doc-pending').outerHTML = '<span class="doc-ok">&#10003; Aprovado</span>'; row.querySelector('.status-pill').className = 'status-pill tiny good'; row.querySelector('.status-pill').textContent = 'Ativo'; button.remove(); showToast('Certidão aprovada.'); }
+    function moderate(button) { showToast('Usuário encaminhado para moderação.'); }
+    function banUser(button) { const row = button.closest('tr'); row.classList.add('row-muted'); row.querySelector('.status-pill').className = 'status-pill tiny banned'; row.querySelector('.status-pill').textContent = 'Banido'; showToast('Conta desativada.'); }
+    function filterUsers(query) { document.querySelectorAll('#usersBody tr').forEach((row) => { row.hidden = query && !row.textContent.toLowerCase().includes(query.toLowerCase()); }); }
+    document.addEventListener('DOMContentLoaded', () => { loadBabysitters(); document.querySelectorAll('.modal-backdrop').forEach((backdrop) => backdrop.addEventListener('click', (event) => { if (event.target === backdrop) closeModal(backdrop.id); })); });
+  </script>
+</body>
+</html>

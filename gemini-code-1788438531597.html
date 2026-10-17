@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Babysite - Conectando Famílias e Babás com Segurança</title>
+  <style>
+    /* ==========================================================================
+       1. VARIaVEIS DE ESTILO E ZERAMENTO
+       ========================================================================== */
+    :root {
+      --primary-orange: #e68a00;
+      --secondary-orange: #f4a261;
+      --bg-cream: #faf4e8;
+      --bg-card: #ffffff;
+      --purple-btn: #6c2bd9;
+      --purple-hover: #5b21b6;
+      --text-dark: #333333;
+      --text-muted: #666666;
+      --border-color: #e2d2be;
+      --star-color: #ffb703;
+      --danger-color: #dc2626;
+      --success-color: #16a34a;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-cream);
+      color: var(--text-dark);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ==========================================================================
+       2. CABEÇALHO E NAVBAR
+       ========================================================================== */
+    header {
+      background-color: var(--primary-orange);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+    }
+
+    .logo-icon {
+      font-size: 32px;
+      background: white;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+    }
+
+    .logo-text {
+      color: white;
+      font-weight: bold;
+      font-size: 1.5rem;
+      letter-spacing: 1px;
+    }
+
+    .search-bar {
+      flex: 1;
+      max-width: 450px;
+      margin: 0 20px;
+      position: relative;
+    }
+
+    .search-bar input {
+      width: 100%;
+      padding: 10px 16px;
+      border-radius: 20px;
+      border: none;
+      outline: none;
+      font-size: 0.95rem;
+      background-color: #ffffff;
+    }
+
+    .nav-buttons {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .btn {
+      padding: 9px 18px;
+      border-radius: 20px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-light {
+      background-color: #fff8f0;
+      color: var(--primary-orange);
+    }
+
+    .btn-light:hover {
+      background-color: #ffe8d1;
+    }
+
+    .btn-purple {
+      background-color: var(--purple-btn);
+      color: white;
+    }
+
+    .btn-purple:hover {
+      background-color: var(--purple-hover);
+    }
+
+    .user-role-selector {
+      background-color: rgba(255, 255, 255, 0.2);
+      border-radius: 15px;
+      padding: 4px 10px;
+      color: white;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .user-role-selector select {
+      background: transparent;
+      border: none;
+      color: white;
+      font-weight: bold;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .user-role-selector select option {
+      color: var(--text-dark);
+    }
+
+    /* ==========================================================================
+       3. CONTEÚDO PRINCIPAL & ESTRUTURA DE ABAS
+       ========================================================================== */
+    main {
+      flex: 1;
+      padding: 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* BANNER E FILTROS DO MÓDULO HOME */
+    .hero-banner {
+      background-color: #fcebd2;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      text-align: center;
+      border: 1px solid var(--border-color);
+    }
+
+    .hero-banner h2 {
+      color: var(--primary-orange);
+      margin-bottom: 6px;
+    }
+
+    .filter-section {
+      background-color: #fff3e0;
+      padding: 16px;
+      border-radius: 12px;
+      margin-bottom: 24px;
+      border: 1px solid var(--border-color);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .filter-group label {
+      font-size: 0.85rem;
+      font-weight: bold;
+      color: var(--text-dark);
+    }
+
+    .filter-group select, .filter-group input {
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 0.9rem;
+    }
+
+    .checkbox-group {
+      display: flex;
+      gap: 10px;
+      font-size: 0.85rem;
+    }
+
+    /* CARDS DE BABÁS */
+    .babysitters-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .babysitter-card {
+      background-color: var(--bg-card);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      border: 1px solid var(--border-color);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .babysitter-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+    }
+
+    .card-img-container {
+      height: 200px;
+      background-color: #ddd;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-img-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .badge-verified {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background-color: var(--success-color);
+      color: white;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: bold;
+    }
+
+    .card-body {
+      padding: 16px;
+    }
+
+    .card-body h3 {
+      font-size: 1.1rem;
+      margin-bottom: 4px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .card-body .experience {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .card-body .price {
+      font-weight: bold;
+      color: var(--primary-orange);
+      font-size: 1.1rem;
+      margin-bottom: 6px;
+    }
+
+    .card-body .availability {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    /* ==========================================================================
+       4. INTERFACE ESTILO WHATSAPP WEB (MÓDULOS BABÁ & MENSAGENS)
+       ========================================================================== */
+    .chat-layout {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      background-color: white;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+      height: 600px;
+      overflow: hidden;
+    }
+
+    .chat-sidebar {
+      border-right: 1px solid var(--border-color);
+      background-color: #fafafa;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chat-sidebar-header {
+      padding: 14px;
+      background-color: #f0f0f0;
+      font-weight: bold;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .chat-list {
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .chat-item {
+      padding: 12px 16px;
+      border-bottom: 1px solid #eee;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .chat-item:hover, .chat-item.active {
+      background-color: #eef2ff;
+    }
+
+    .chat-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background-color: #ccc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: white;
+    }
+
+    .chat-info {
+      flex: 1;
+    }
+
+    .chat-info .name {
+      font-weight: bold;
+      font-size: 0.9rem;
+    }
+
+    .chat-info .preview {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .chat-main {
+      display: flex;
+      flex-direction: column;
+      background-color: #f7f9fa;
+    }
+
+    .chat-header {
+      padding: 12px 20px;
+      background-color: #ffffff;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .chat-messages {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .message-bubble {
+      max-width: 65%;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+
+    .message-bubble.received {
+      background-color: white;
+      align-self: flex-start;
+      border: 1px solid #e0e0e0;
+    }
+
+    .message-bubble.sent {
+      background-color: #dcf8c6;
+      align-self: flex-end;
+    }
+
+    .chat-input-area {
+      padding: 12px 20px;
+      background-color: white;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      gap: 10px;
+    }
+
+    .chat-input-area input {
+      flex: 1;
+      padding: 10px 14px;
+      border-radius: 20px;
+      border: 1px solid #ccc;
+      outline: none;
+    }
+
+    /* ==========================================================================
+       5. COMPONENTES: PAINÉIS, TABELAS E FORMULÁRIOS
+       ========================================================================== */
+    .dashboard-panel {
+      background-color: white;
+      padding: 24px;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+      margin-bottom: 20px;
+    }
+
+    .dashboard-panel h2 {
+      margin-bottom: 16px;
+      color: var(--primary-orange);
+      font-size: 1.3rem;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    .data-table th, .data-table td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+      font-size: 0.9rem;
+    }
+
+    .data-table th {
+      background-color: #f8f8f8;
+      font-weight: bold;
+    }
+
+    .star-rating {
+      color: var(--star-color);
+      font-size: 1.1rem;
+    }
+
+    /* ==========================================================================
+       6. MODAIS (LOGIN, CADASTRO, AVALIAÇÃO E AGENDAMENTO)
+       ========================================================================== */
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0,0,0,0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .modal-backdrop.active {
+      display: flex;
+    }
+
+    .modal-card {
+      background-color: var(--bg-cream);
+      width: 90%;
+      max-width: 480px;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      position: relative;
+      border: 1px solid var(--border-color);
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--text-muted);
+    }
+
+    .modal-title {
+      text-align: center;
+      color: var(--text-dark);
+      margin-bottom: 16px;
+      font-size: 1.25rem;
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 0.85rem;
+      font-weight: bold;
+    }
+
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 0.9rem;
+    }
+
+    .role-toggle {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .role-option {
+      flex: 1;
+      padding: 10px;
+      border: 2px solid var(--border-color);
+      border-radius: 10px;
+      text-align: center;
+      cursor: pointer;
+      font-weight: bold;
+      background-color: white;
+      font-size: 0.85rem;
+    }
+
+    .role-option.selected {
+      border-color: var(--primary-orange);
+      background-color: #fff3e0;
+      color: var(--primary-orange);
+    }
+
+    .step-indicator {
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo-container" onclick="switchTab('homeTab')">
+      <div class="logo-icon">🦒</div>
+      <div class="logo-text">Babysite</div>
+    </div>
+
+    <div class="search-bar">
+      <input type="text" placeholder="Pesquisar por babás, bairros, qualificações..." oninput="filterBabysitters(this.value)" />
+    </div>
+
+    <div class="nav-buttons">
+      <div class="user-role-selector">
+        <span>Visão:</span>
+        <select id="roleSelector" onchange="changeUserRole(this.value)">
+          <option value="guest">Visitante (Público)</option>
+          <option value="parent">Módulo Pais</option>
+          <option value="babysitter">Módulo Babá</option>
+          <option value="admin">Módulo Admin</option>
+        </select>
+      </div>
+
+      <button class="btn btn-light" id="btnRegisterParent" onclick="openRegisterModal('parent')">Cadastrar como Pais</button>
+      <button class="btn btn-light" id="btnRegisterBabysitter" onclick="openRegisterModal('babysitter')">Cadastrar como Babá</button>
+      <button class="btn btn-purple" id="btnLogin" onclick="openLoginModal()">Entrar</button>
+    </div>
+  </header>
+
+  <main>
+    <section id="homeTab" class="tab-content active">
+      <div class="hero-banner">
+        <h2>A plataforma mais segura para a contratação de babás</h2>
+        <p>Conectando responsáveis e profissionais qualificadas com verificação de antecedentes e avaliações reais.</p>
+      </div>
+
+      <div class="filter-section">
+        <div class="filter-group">
+          <label>Estado (UF)</label>
+          <select id="filterUF" onchange="applyFilters()">
+            <option value="">Todos os Estados</option>
+            <option value="PB">Paraíba (PB)</option>
+            <option value="SP">São Paulo (SP)</option>
+            <option value="RJ">Rio de Janeiro (RJ)</option>
+            <option value="MG">Minas Gerais (MG)</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label>Disponibilidade</label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" value="seg" onchange="applyFilters()"> Seg</label>
+            <label><input type="checkbox" value="ter" onchange="applyFilters()"> Ter</label>
+            <label><input type="checkbox" value="qua" onchange="applyFilters()"> Qua</label>
+            <label><input type="checkbox" value="qui" onchange="applyFilters()"> Qui</label>
+            <label><input type="checkbox" value="sex" onchange="applyFilters()"> Sex</label>
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <label>Tipo de Cuidado</label>
+          <select id="filterCareType" onchange="applyFilters()">
+            <option value="">Todos</option>
+            <option value="regular">Regularmente</option>
+            <option value="occasional">Ocasionalmente</option>
+            <option value="afterschool">Pós-escola</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label>Tarifa máxima (R$/hr)</label>
+          <input type="number" id="filterPrice" placeholder="Ex: 50" oninput="applyFilters()" />
+        </div>
+      </div>
+
+      <div class="babysitters-grid" id="babysittersContainer">
+        </div>
+    </section>
+
+    <section id="parentsTab" class="tab-content">
+      <div class="dashboard-panel">
+        <h2>Área do Responsável</h2>
+        <p>Gerencie seus dados, perfil das crianças e conversas com babás contratadas.</p>
+      </div>
+
+      <div class="dashboard-panel">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <h3>Minhas Crianças Cadastradas</h3>
+          <button class="btn btn-purple" onclick="openChildModal()">+ Adicionar Criança</button>
+        </div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Nome da Criança</th>
+              <th>Idade</th>
+              <th>Histórico Médico / Cuidados Especiais</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="childrenTableBody">
+            <tr>
+              <td>Lucas Oliveira</td>
+              <td>4 anos</td>
+              <td>Alergia leve a amendoim; toma medicação X às 14h</td>
+              <td><button class="btn btn-light" style="padding: 4px 8px;" onclick="alert('Editar cadastro')">Editar</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="dashboard-panel">
+        <h3 style="margin-bottom: 12px;">Bate-Papo & Agendamentos com Babás</h3>
+        <div class="chat-layout">
+          <div class="chat-sidebar">
+            <div class="chat-sidebar-header">Conversas Ativas</div>
+            <div class="chat-list">
+              <div class="chat-item active" onclick="selectChat('Luciana Silva')">
+                <div class="chat-avatar">LS</div>
+                <div class="chat-info">
+                  <div class="name">Luciana Silva</div>
+                  <div class="preview">Confirmado para a entrevista amanhã!</div>
+                </div>
+              </div>
+              <div class="chat-item" onclick="selectChat('Ana Maria')">
+                <div class="chat-avatar">AM</div>
+                <div class="chat-info">
+                  <div class="name">Ana Maria</div>
+                  <div class="preview">Olá, tenho interesse na vaga.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="chat-main">
+            <div class="chat-header">
+              <span id="currentChatName">Luciana Silva (Babá Cadastrada)</span>
+              <div>
+                <button class="btn btn-light" style="font-size:0.8rem;" onclick="openInterviewModal()">Marcar Entrevista</button>
+                <button class="btn btn-purple" style="font-size:0.8rem;" onclick="openReviewModal()">Avaliar Serviço</button>
+              </div>
+            </div>
+            <div class="chat-messages" id="chatMessages">
+              <div class="message-bubble received">Olá! Vi seu perfil e gostaria de saber se está disponível para quinta-feira.</div>
+              <div class="message-bubble sent">Olá! Sim, estou disponível. Podemos agendar uma entrevista presencial ou por vídeo?</div>
+              <div class="message-bubble received">Ótimo! Vou enviar o convite de entrevista pelo sistema.</div>
+            </div>
+            <div class="chat-input-area">
+              <input type="text" id="chatInput" placeholder="Digite sua mensagem..." onkeypress="handleKeyPress(event)" />
+              <button class="btn btn-purple" onclick="sendMessage()">Enviar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="babysitterTab" class="tab-content">
+      <div class="dashboard-panel">
+        <h2>Painel Profissional da Babá</h2>
+        <p>Gerencie sua disponibilidade, solicitações de entrevista e antecedentes criminais.</p>
+      </div>
+
+      <div class="dashboard-panel">
+        <h3>Meu Perfil & Documentação</h3>
+        <form style="margin-top: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px;" onsubmit="event.preventDefault(); alert('Perfil atualizado com sucesso!');">
+          <div class="form-group">
+            <label>Tarifa Padrão (R$/Hora)</label>
+            <input type="number" value="45" />
+          </div>
+          <div class="form-group">
+            <label>Anos/Meses de Experiência</label>
+            <input type="text" value="18 meses" />
+          </div>
+          <div class="form-group" style="grid-column: span 2;">
+            <label>Certidão de Antecedentes Criminais (PDF)</label>
+            <input type="file" accept=".pdf" />
+            <small style="color: var(--success-color); font-weight: bold; margin-top: 4px; display: block;">✓ Documento Verificado e Aprovado pela Administração</small>
+          </div>
+          <div style="grid-column: span 2;">
+            <button class="btn btn-purple" type="submit">Salvar Alterações do Perfil</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="dashboard-panel">
+        <h3>Solicitações de Entrevista Recebidas</h3>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Responsável</th>
+              <th>Data e Horário</th>
+              <th>Status</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Carlos Eduardo</td>
+              <td>15/10/2026 às 14:00</td>
+              <td><span style="color: var(--primary-orange); font-weight: bold;">Pendente</span></td>
+              <td>
+                <button class="btn btn-purple" style="padding: 4px 10px; font-size: 0.8rem;" onclick="alert('Entrevista aceita!')">Aceitar</button>
+                <button class="btn btn-light" style="padding: 4px 10px; font-size: 0.8rem;" onclick="alert('Entrevista recusada!')">Recusar</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="adminTab" class="tab-content">
+      <div class="dashboard-panel">
+        <h2>Painel de Moderação e Administração</h2>
+        <p>Validação de cadastros, verificação de antecedentes criminais e banimento de usuários.</p>
+      </div>
+
+      <div class="dashboard-panel">
+        <h3>Usuários Cadastrados no Sistema</h3>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nome</th>
+              <th>Tipo</th>
+              <th>CPF</th>
+              <th>Antecedentes Criminais</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>#102</td>
+              <td>Luciana Silva</td>
+              <td>Babá</td>
+              <td>123.456.789-00</td>
+              <td><span style="color: var(--success-color); font-weight: bold;">Validado (PDF)</span></td>
+              <td>
+                <button class="btn btn-light" style="padding: 4px 8px; color: var(--danger-color);" onclick="alert('Usuário banido/desativado com sucesso.')">Banir Conta</button>
+              </td>
+            </tr>
+            <tr>
+              <td>#103</td>
+              <td>Mariana Ramos</td>
+              <td>Babá</td>
+              <td>987.654.321-11</td>
+              <td><span style="color: var(--primary-orange); font-weight: bold;">Aguardando Análise</span></td>
+              <td>
+                <button class="btn btn-purple" style="padding: 4px 8px;" onclick="alert('Antecedentes aprovados!')">Aprovar PDF</button>
+                <button class="btn btn-light" style="padding: 4px 8px; color: var(--danger-color);" onclick="alert('Usuário banido.')">Banir</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <div class="modal-backdrop" id="modalAuth">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeModal('modalAuth')">&times;</button>
+      <h3 class="modal-title" id="authTitle">Você não está logado no site</h3>
+      <p style="text-align: center; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">Faça seu login ou cadastre-se para acessar dados completos e solicitar entrevistas.</p>
+
+      <div class="role-toggle">
+        <div class="role-option selected" id="roleBabysitterOpt" onclick="selectRegisterRole('babysitter')">
+          👧 Cadastrar como Babá
+        </div>
+        <div class="role-option" id="roleParentOpt" onclick="selectRegisterRole('parent')">
+          👨‍👩‍👧 Cadastrar como Pai/Mãe
+        </div>
+      </div>
+
+      <div class="step-indicator" id="stepIndicator">Passo 1 de 5 - Dados Básicos</div>
+
+      <form id="authForm" onsubmit="handleAuthSubmit(event)">
+        <div class="form-group">
+          <label>Nome Completo</label>
+          <input type="text" id="authName" placeholder="Ex: Maria Oliveira" required />
+        </div>
+        <div class="form-group">
+          <label>E-mail Principal</label>
+          <input type="email" id="authEmail" placeholder="nome@email.com" required />
+        </div>
+        <div class="form-group">
+          <label>CPF</label>
+          <input type="text" placeholder="000.000.000-00" required />
+        </div>
+        <div class="form-group">
+          <label>Senha</label>
+          <input type="password" placeholder="Digite sua senha" required />
+        </div>
+
+        <button class="btn btn-purple" type="submit" style="width: 100%; justify-content: center; margin-top: 10px;">AVANÇAR →</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="modalInterview">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeModal('modalInterview')">&times;</button>
+      <h3 class="modal-title">Agendar Entrevista de Triagem</h3>
+      <form onsubmit="event.preventDefault(); alert('Solicitação de entrevista enviada à babá!'); closeModal('modalInterview');">
+        <div class="form-group">
+          <label>Data da Entrevista</label>
+          <input type="date" required />
+        </div>
+        <div class="form-group">
+          <label>Horário</label>
+          <input type="time" required />
+        </div>
+        <div class="form-group">
+          <label>Formato / Observações</label>
+          <textarea rows="3" placeholder="Ex: Chamada de vídeo via Google Meet ou presencial na residência."></textarea>
+        </div>
+        <button class="btn btn-purple" type="submit" style="width: 100%; justify-content: center;">Enviar Solicitação</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="modalReview">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeModal('modalReview')">&times;</button>
+      <h3 class="modal-title">Avaliar Serviço prestado</h3>
+      <form onsubmit="event.preventDefault(); alert('Avaliação e feedback registrados!'); closeModal('modalReview');">
+        <div class="form-group" style="text-align: center;">
+          <label>Pontuação por Estrelas (1 a 5)</label>
+          <div class="star-rating" style="font-size: 2rem; cursor: pointer;">★ ★ ★ ★ ★</div>
+        </div>
+        <div class="form-group">
+          <label>Comentário (Opcional)</label>
+          <textarea rows="3" placeholder="Descreva a pontualidade, atenção e cuidado com os filhos..."></textarea>
+        </div>
+        <div class="form-group">
+          <label style="color: var(--danger-color);"><input type="checkbox" /> Desejo realizar uma denúncia sobre este atendimento</label>
+        </div>
+        <button class="btn btn-purple" type="submit" style="width: 100%; justify-content: center;">Enviar Avaliação</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="modalChild">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeModal('modalChild')">&times;</button>
+      <h3 class="modal-title">Cadastrar Novo Filho / Criança</h3>
+      <form onsubmit="handleAddChild(event)">
+        <div class="form-group">
+          <label>Nome da Criança</label>
+          <input type="text" id="childName" required placeholder="Ex: Gabriel" />
+        </div>
+        <div class="form-group">
+          <label>Idade / Data de Nascimento</label>
+          <input type="text" id="childAge" required placeholder="Ex: 3 anos" />
+        </div>
+        <div class="form-group">
+          <label>Histórico Médico e Medicamentos Regulares</label>
+          <textarea id="childMedical" rows="3" placeholder="Alergias, medicamentos regulares ou rotina escolar..."></textarea>
+        </div>
+        <button class="btn btn-purple" type="submit" style="width: 100%; justify-content: center;">Salvar Criança</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // BASE DE DADOS SIMULADA DE BABÁS (MÓDULO HOME)
+    const babysittersData = [
+      {
+        id: 1,
+        nome: "Luciana Silva",
+        exp: "18 m. exp.",
+        preco: 45,
+        dispHoras: "128 hr/mês",
+        uf: "PB",
+        cuidado: "regular",
+        dias: ["seg", "ter", "qua", "qui", "sex"],
+        verificado: true,
+        foto: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=400&q=80"
+      },
+      {
+        id: 2,
+        nome: "Ana Maria",
+        exp: "24 m. exp.",
+        preco: 40,
+        dispHoras: "80 hr/mês",
+        uf: "SP",
+        cuidado: "occasional",
+        dias: ["seg", "sex"],
+        verificado: true,
+        foto: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80"
+      },
+      {
+        id: 3,
+        nome: "Marina Ramos",
+        exp: "12 m. exp.",
+        preco: 35,
+        dispHoras: "124 hr/mês",
+        uf: "PB",
+        cuidado: "afterschool",
+        dias: ["ter", "qui"],
+        verificado: false,
+        foto: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=400&q=80"
+      }
+    ];
+
+    let currentUserRole = "guest"; // 'guest', 'parent', 'babysitter', 'admin'
+
+    // RENDERIZAÇÃO INICIAL
+    document.addEventListener("DOMContentLoaded", () => {
+      renderBabysitters(babysittersData);
+    });
+
+    // TROCA DE MÓDULOS / VISÕES
+    function changeUserRole(role) {
+      currentUserRole = role;
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+
+      if (role === 'guest') {
+        document.getElementById('homeTab').classList.add('active');
+      } else if (role === 'parent') {
+        document.getElementById('parentsTab').classList.add('active');
+      } else if (role === 'babysitter') {
+        document.getElementById('babysitterTab').classList.add('active');
+      } else if (role === 'admin') {
+        document.getElementById('adminTab').classList.add('active');
+      }
+    }
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+    }
+
+    // RENDERIZAR CARDS DE BABÁS NO MÓDULO HOME
+    function renderBabysitters(data) {
+      const container = document.getElementById('babysittersContainer');
+      container.innerHTML = '';
+
+      if (data.length === 0) {
+        container.innerHTML = '<p style="grid-column: 1/-1; text-align: center;">Nenhuma babá encontrada para os filtros selecionados.</p>';
+        return;
+      }
+
+      data.forEach(baba => {
+        const card = document.createElement('div');
+        card.className = 'babysitter-card';
+        card.onclick = () => handleCardClick(baba);
+
+        card.innerHTML = `
+          <div class="card-img-container">
+            <img src="${baba.foto}" alt="${baba.nome}">
+            ${baba.verificado ? '<span class="badge-verified">✓ Antecedentes Verificados</span>' : ''}
+          </div>
+          <div class="card-body">
+            <h3>${baba.nome}</h3>
+            <div class="experience">${baba.exp} | UF: ${baba.uf}</div>
+            <div class="price">R$ ${baba.preco}/hr</div>
+            <div class="availability">Disponibilidade: ${baba.dispHoras}</div>
+            <button class="btn btn-purple" style="width: 100%; justify-content: center; margin-top: 8px;">Ver Perfil & Contratar</button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    // CLIQUE NO CARD DE BABÁ
+    function handleCardClick(baba) {
+      if (currentUserRole === 'guest') {
+        openLoginModal();
+      } else if (currentUserRole === 'parent') {
+        switchTab('parentsTab');
+        selectChat(baba.nome);
+      }
+    }
+
+    // APLICAR FILTROS
+    function applyFilters() {
+      const uf = document.getElementById('filterUF').value;
+      const careType = document.getElementById('filterCareType').value;
+      const maxPrice = parseFloat(document.getElementById('filterPrice').value);
+
+      const filtered = babysittersData.filter(baba => {
+        if (uf && baba.uf !== uf) return false;
+        if (careType && baba.cuidado !== careType) return false;
+        if (!isNaN(maxPrice) && baba.preco > maxPrice) return false;
+        return true;
+      });
+
+      renderBabysitters(filtered);
+    }
+
+    function filterBabysitters(query) {
+      const q = query.toLowerCase();
+      const filtered = babysittersData.filter(baba => baba.nome.toLowerCase().includes(q) || baba.uf.toLowerCase().includes(q));
+      renderBabysitters(filtered);
+    }
+
+    // MODAIS CONTROLE
+    function openLoginModal() {
+      document.getElementById('modalAuth').classList.add('active');
+    }
+
+    function openRegisterModal(role) {
+      selectRegisterRole(role);
+      openLoginModal();
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.remove('active');
+    }
+
+    function selectRegisterRole(role) {
+      const babOpt = document.getElementById('roleBabysitterOpt');
+      const parOpt = document.getElementById('roleParentOpt');
+
+      if (role === 'babysitter') {
+        babOpt.classList.add('selected');
+        parOpt.classList.remove('selected');
+      } else {
+        parOpt.classList.add('selected');
+        babOpt.classList.remove('selected');
+      }
+    }
+
+    function handleAuthSubmit(e) {
+      e.preventDefault();
+      alert('Login/Cadastro realizado com sucesso!');
+      closeModal('modalAuth');
+      document.getElementById('roleSelector').value = 'parent';
+      changeUserRole('parent');
+    }
+
+    // LÓGICA DE CHAT SIMULADO
+    function selectChat(name) {
+      document.getElementById('currentChatName').innerText = `${name} (Babá Cadastrada)`;
+    }
+
+    function sendMessage() {
+      const input

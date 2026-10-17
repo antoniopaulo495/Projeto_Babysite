@@ -1,0 +1,15 @@
+#sitterAddressForm .form-label {
+  display: block;
+  color: #68747a;
+  font-size: .9rem;
+  font-weight: 500;
+}
+
+#sitterAddressForm .form-control,
+#sitterAddressForm .form-select {
+  min-height: 44px;
+}
+
+#addressError:empty {
+  display: none;
+}

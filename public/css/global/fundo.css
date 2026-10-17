@@ -1,0 +1,35 @@
+/* Reset básico e tipografia */
+* {
+  box-sizing: border-box;
+}
+
+/* Fundo Vetorizado Padrão do BABYSITE */
+body {
+  background-color: #F8F3E6 !important;
+  background-image: url('../../imagens/fundo.svg') !important;
+  background-repeat: no-repeat !important;
+  background-position: center center !important;
+  background-size: cover !important;
+  background-attachment: fixed !important;
+  min-height: 100vh;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color: #212529;
+}
+
+/* Força os cards a manterem fundo branco no modo escuro do navegador */
+.card, .custom-card {
+  background-color: #FFFFFF !important;
+  color: #212529 !important;
+}
+
+/* Header Superior Padrão */
+.bg-custom-header {
+  background-color: #121212;
+}
+
+.logo-img {
+  width: 45px;
+  height: 45px;
+  object-fit: cover;
+  border-radius: 50%;
+}

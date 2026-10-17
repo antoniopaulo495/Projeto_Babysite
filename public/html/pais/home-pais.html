@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Babysite | Área do responsável</title>
+  <link rel="icon" href="../../imagens/logo_do_babysite.png" type="image/png">
+  <link rel="stylesheet" href="../../css/areas/portal.css">
+  <link rel="stylesheet" href="../../css/areas/agenda.css">
+</head>
+<body>
+  <div class="portal-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="../home/home.html">
+        <span class="brand-mark"><img src="../../imagens/logo_do_babysite.png" alt=""></span>
+        <span><strong>baby</strong>site<small>área da família</small></span>
+      </a>
+
+      <div class="sidebar-label">NAVEGAÇÃO</div>
+      <nav class="side-nav" aria-label="Menu do responsável">
+        <button class="side-link active" data-screen="inicio"><span class="side-icon">⌂</span>Início</button>
+        <button class="side-link" data-screen="perfil"><span class="side-icon">◉</span>Perfil</button>
+        <button class="side-link" data-screen="conversas"><span class="side-icon">✉</span>Conversas<span class="nav-count" id="conversationNavCount">0</span></button>
+        <button class="side-link" data-screen="entrevistas"><span class="side-icon">◫</span>Entrevistas<span class="nav-count alert">0</span></button>
+        <button class="side-link" data-screen="contratos"><span class="side-icon">▣</span>Contratos<span class="nav-count">0</span></button>
+        <button class="side-link" data-screen="configuracoes"><span class="side-icon">⚙</span>Configurações</button>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <a href="../home/home.html" class="back-link">← Voltar para início</a>
+        <div class="profile-user">
+          <span class="user-avatar">CO</span>
+          <span><strong id="currentUserNameSidebar">Responsável</strong><small id="currentUserEmailSidebar"></small></span>
+          <button class="logout-button" title="Sair" onclick="logout()">↗</button>
+        </div>
+      </div>
+    </aside>
+
+    <main class="workspace">
+      <header class="topbar">
+        <button class="mobile-menu" aria-label="Abrir menu" onclick="document.body.classList.toggle('sidebar-open')">☰</button>
+        <div>
+          <p class="breadcrumb">PAIS / <strong id="breadcrumbName">INÍCIO</strong></p>
+          <h1 id="screenTitle">Início</h1>
+        </div>
+        <div class="topbar-actions">
+          <button class="notification-button" title="Notificações">◌<i>0</i></button>
+          <span class="date-label">06 set 2026</span>
+        </div>
+      </header>
+
+      <section class="screen active-screen" data-screen-content="inicio">
+        <div class="visitor-home">
+          <div class="visitor-hero">
+            <div class="visitor-hero-copy">
+              <p class="eyebrow">UMA REDE DE CONFIANÇA</p>
+              <h2>O cuidado certo para cada <em>família.</em></h2>
+              <p>Encontre profissionais verificadas, converse com tranquilidade e combine cada detalhe antes do primeiro encontro.</p>
+              <button class="primary-button" data-scroll-target="visitorProfiles">Explorar profissionais <span>→</span></button>
+            </div>
+            <div class="visitor-hero-art" aria-label="Profissionais disponíveis para conversar">
+              <span class="visitor-figure visitor-figure-one">LS</span>
+              <span class="visitor-figure visitor-figure-two">AM</span>
+              <span class="visitor-note"><strong id="visitorHeroCount">0</strong><small>babás ativas</small></span>
+            </div>
+          </div>
+
+          <div class="visitor-trust"><span><strong id="activeSitterCount">0</strong> babás ativas</span><span>Perfis do banco de dados</span><span>Status atualizado</span></div>
+
+          <div class="visitor-heading">
+            <div><p class="eyebrow">ENCONTRE COM CALMA</p><h2>Profissionais perto de você</h2></div>
+            <span class="muted" id="visitorResultCount">0 perfis disponíveis</span>
+          </div>
+
+          <div class="visitor-filters">
+            <label class="visitor-search-field">Nome da profissional<input id="visitorSearch" type="search" placeholder="Buscar por nome"></label>
+            <label>Estado<select id="visitorStateFilter"><option value="">Todos os estados</option></select></label>
+            <label>Município<select id="visitorCityFilter" disabled><option value="">Todos os municípios</option></select></label>
+            <label>Tarifa por hora<input id="visitorRateFilter" type="number" min="1" step="0.01" placeholder="Valor máximo (R$)"></label>
+            <fieldset class="visitor-availability-filter">
+              <legend>Disponibilidade · escolha um ou mais dias</legend>
+              <label><input type="checkbox" name="visitorAvailabilityFilter" value="segunda"> Segunda-feira</label>
+              <label><input type="checkbox" name="visitorAvailabilityFilter" value="terca"> Terça-feira</label>
+              <label><input type="checkbox" name="visitorAvailabilityFilter" value="quarta"> Quarta-feira</label>
+              <label><input type="checkbox" name="visitorAvailabilityFilter" value="quinta"> Quinta-feira</label>
+              <label><input type="checkbox" name="visitorAvailabilityFilter" value="sexta"> Sexta-feira</label>
+              <label><input type="checkbox" name="visitorAvailabilityFilter" value="sabado"> Sábado</label>
+            </fieldset>
+          </div>
+
+          <div class="visitor-profiles" id="visitorProfiles"></div>
+        </div>
+      </section>
+
+      <section class="screen" data-screen-content="perfil">
+        <div class="welcome-row">
+          <div>
+            <p class="eyebrow">ESPAÇO DA FAMÍLIA</p>
+            <h2>Olá, <span id="currentUserGreeting">Responsável</span> <em>bonito ver você aqui.</em></h2>
+            <p class="muted">Tudo organizado para acompanhar sua busca por profissionais com confiança.</p>
+          </div>
+          <span class="status-pill good">✓ Conta verificada</span>
+        </div>
+
+        <div class="metrics">
+          <article>
+            <span>Perfil completo</span>
+            <strong id="profileCompletion">--</strong>
+            <small>Dados do cadastro</small>
+          </article>
+          <article>
+            <span>Conversas ativas</span>
+            <strong>0</strong>
+            <small>Nenhuma conversa registrada</small>
+          </article>
+          <article>
+            <span>Próxima entrevista</span>
+            <strong>--</strong>
+            <small>Nenhuma entrevista registrada</small>
+          </article>
+          <article class="dark-metric">
+            <span>Status da conta</span>
+            <strong>Ativa</strong>
+            <small>Sessão autenticada</small>
+          </article>
+        </div>
+
+        <div class="content-grid">
+          <section class="panel">
+            <div class="panel-heading">
+              <div>
+                <p class="eyebrow">ATIVIDADE RECENTE</p>
+                <h3>Conversas recentes</h3>
+              </div>
+              <button class="link-button" data-screen-target="conversas">Ver tudo →</button>
+            </div>
+
+            <div class="list-table"><div class="list-row"><p class="muted">Nenhuma conversa registrada.</p></div></div>
+          </section>
+
+          <aside class="panel quick-panel">
+            <p class="eyebrow">LEMBRETE</p>
+            <h3>Uma conversa pode mudar tudo.</h3>
+            <p>Converse com a candidata antes da primeira contratação e confirme o melhor momento para a entrevista.</p>
+            <button class="primary-button" data-screen-target="conversas">Abrir conversas</button>
+          </aside>
+        </div>
+
+        <section class="panel chat-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">CONVERSAS</p>
+              <h3>Fale com sua babá</h3>
+            </div>
+            <span class="online-label" id="conversationCount">0 conversas</span>
+          </div>
+
+          <div class="chat-shell">
+            <div class="conversation-list"><p class="muted">Nenhuma conversa registrada.</p></div>
+
+            <div class="chat-window">
+              <div class="chat-top">
+                <span class="avatar coral">--</span>
+                <span>
+                  <strong id="chatName">Nenhuma conversa selecionada</strong>
+                  <small class="chat-status">Selecione uma conversa</small>
+                </span>
+                <div class="chat-actions">
+                  <button class="button-secondary" data-open-interview-request disabled>Agendar entrevista</button>
+                </div>
+              </div>
+
+              <div class="messages" id="messages"><p class="muted">Selecione uma conversa para ver as mensagens.</p></div>
+
+              <form class="message-form" id="messageForm">
+                <input id="messageInput" type="text" placeholder="Selecione uma conversa para enviar mensagens" autocomplete="off" maxlength="4000" disabled>
+                <button class="send-button" aria-label="Enviar mensagem" disabled>↑</button>
+              </form>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <section class="screen" data-screen-content="conversas">
+        <div class="screen-heading">
+          <div>
+            <p class="eyebrow">CONVERSAS</p>
+            <h2>Mensagens e acompanhamento</h2>
+            <p class="muted">Organize o relacionamento com a babá e siga as próximas etapas da contratação.</p>
+          </div>
+        </div>
+
+        <div class="chat-shell full-chat">
+          <div class="conversation-list"><p class="muted">Nenhuma conversa registrada.</p></div>
+
+          <div class="chat-window">
+            <div class="chat-top">
+              <span class="avatar coral">--</span>
+              <span>
+                <strong id="chatNameFull">Nenhuma conversa selecionada</strong>
+                <small class="chat-status">Selecione uma conversa</small>
+              </span>
+              <div class="chat-actions">
+                <button class="button-secondary" data-open-interview-request disabled>Agendar entrevista</button>
+              </div>
+            </div>
+            <div class="messages large-messages"><p class="muted">Selecione uma conversa para ver as mensagens.</p></div>
+            <form class="message-form" id="messageFormFull">
+              <input id="messageInputFull" type="text" placeholder="Selecione uma conversa para enviar mensagens" autocomplete="off" maxlength="4000" disabled>
+              <button class="send-button" aria-label="Enviar mensagem" disabled>↑</button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" data-screen-content="entrevistas">
+        <div class="screen-heading">
+          <div>
+            <p class="eyebrow">ENTREVISTAS</p>
+            <h2>Próximos encontros</h2>
+            <p class="muted">Acompanhe cada etapa da seleção e confirme a melhor disponibilidade.</p>
+          </div>
+          <button class="primary-button" data-screen-target="inicio">+ Encontrar babá e solicitar entrevista</button>
+        </div>
+
+        <section class="panel">
+          <div class="panel-heading"><div><p class="eyebrow">PENDENTES</p><h3>Aguardando resposta</h3></div></div>
+          <div id="pendingRequestList"><p class="muted">Nenhuma solicitação pendente.</p></div>
+        </section>
+        <section class="panel">
+          <div class="panel-heading"><div><p class="eyebrow">AGENDA</p><h3>Entrevistas aceitas</h3></div></div>
+          <div id="interviewList"><p class="muted">Nenhuma entrevista registrada.</p></div>
+        </section>
+      </section>
+
+      <section class="screen" data-screen-content="contratos">
+        <div class="screen-heading">
+          <div><p class="eyebrow">CONTRATOS</p><h2>Contratações aceitas</h2><p class="muted">Acompanhe as datas de início e os dias e horários combinados.</p></div>
+        </div>
+        <div id="contractList" class="appointment-list"><p class="muted">Nenhum contrato registrado.</p></div>
+      </section>
+
+      <section class="screen" data-screen-content="configuracoes">
+        <div class="screen-heading">
+          <div>
+            <p class="eyebrow">CONFIGURAÇÕES</p>
+            <h2>Preferências da conta</h2>
+            <p class="muted">Ajuste notificações e o nível de privacidade do seu perfil.</p>
+          </div>
+        </div>
+
+        <section class="panel settings-panel">
+          <label class="setting"><span><strong>Notificar novas mensagens</strong><small>Receba alertas quando a babá responder.</small></span><input type="checkbox" checked><i></i></label>
+          <label class="setting"><span><strong>Receber lembretes de entrevista</strong><small>Envio de lembretes por e-mail e WhatsApp.</small></span><input type="checkbox" checked><i></i></label>
+          <label class="setting"><span><strong>Perfil visível para babás</strong><small>Permitir que profissionais vejam suas informações básicas.</small></span><input type="checkbox"><i></i></label>
+          <button class="primary-button" data-toast="Configurações salvas.">Salvar alterações</button>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" role="status"></div>
+
+  <div class="dialog-backdrop" id="interviewRequestDialog" hidden>
+    <section class="dialog-panel" role="dialog" aria-modal="true" aria-labelledby="interviewDialogTitle">
+      <button class="dialog-close" type="button" data-close-interview-request aria-label="Fechar">×</button>
+      <p class="eyebrow">SOLICITAÇÃO PARA <span id="interviewBabysitterName">A BABÁ</span></p>
+      <h2 id="interviewDialogTitle">Agendar entrevista</h2>
+      <p class="muted">A solicitação será enviada à babá. A entrevista só será adicionada à agenda se ela aceitar.</p>
+      <form id="chatInterviewRequestForm" class="dialog-form">
+        <label>Data da entrevista<input name="data_entrevista" type="date" required></label>
+        <label>Horário<input name="hora_entrevista" type="time" required></label>
+        <label>Formato
+          <select name="formato" required>
+            <option value="online">Online</option>
+            <option value="presencial">Presencial</option>
+          </select>
+        </label>
+        <label>Mensagem (opcional)<textarea name="mensagem" rows="3" maxlength="500"></textarea></label>
+        <div class="dialog-actions">
+          <button class="secondary-button" type="button" data-close-interview-request>Cancelar</button>
+          <button class="primary-button" type="submit">Enviar solicitação</button>
+        </div>
+      </form>
+    </section>
+  </div>
+
+  <div class="dialog-backdrop" id="contractReviewDialog" hidden>
+    <section class="dialog-panel" role="dialog" aria-modal="true" aria-labelledby="contractReviewTitle">
+      <button class="dialog-close" type="button" data-close-contract-review aria-label="Fechar">×</button>
+      <p class="eyebrow">AVALIAÇÃO DO SERVIÇO</p>
+      <h2 id="contractReviewTitle">O que você achou do serviço?</h2>
+      <p class="muted">A babá receberá sua avaliação. Notas de 1 a 3 também serão encaminhadas anonimamente à administração como denúncia.</p>
+      <form id="contractReviewForm" class="dialog-form">
+        <label>Nota
+          <select name="nota" required>
+            <option value="">Selecione de 1 a 5 estrelas</option>
+            <option value="5">5 estrelas — excelente</option>
+            <option value="4">4 estrelas — muito bom</option>
+            <option value="3">3 estrelas — bom</option>
+            <option value="2">2 estrelas — regular</option>
+            <option value="1">1 estrela — ruim</option>
+          </select>
+        </label>
+        <fieldset id="reviewReasons" class="review-reasons" hidden>
+          <legend>Quais motivos explicam sua nota? Selecione ao menos um.</legend>
+          <label><input type="checkbox" name="motivos" value="Falta de pontualidade ou ausência"> Falta de pontualidade ou ausência</label>
+          <label><input type="checkbox" name="motivos" value="Não seguiu as orientações combinadas"> Não seguiu as orientações combinadas</label>
+          <label><input type="checkbox" name="motivos" value="Falta de atenção com a criança"> Falta de atenção com a criança</label>
+          <label><input type="checkbox" name="motivos" value="Comunicação inadequada"> Comunicação inadequada</label>
+          <label><input type="checkbox" name="motivos" value="Comportamento inadequado"> Comportamento inadequado</label>
+          <label><input type="checkbox" name="motivos" value="Questão de segurança"> Questão de segurança</label>
+          <label><input type="checkbox" name="motivos" value="Outro motivo"> Outro motivo</label>
+          <small id="reviewReasonsHint"></small>
+        </fieldset>
+        <label>Comentário (opcional)<textarea name="comentario" rows="4" maxlength="1000"></textarea></label>
+        <div class="dialog-actions">
+          <button class="secondary-button" type="button" data-close-contract-review>Cancelar</button>
+          <button class="primary-button" type="submit">Enviar avaliação</button>
+        </div>
+      </form>
+    </section>
+  </div>
+
+  <script src="../../js/pais/pais.js"></script>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Babysite | Perfil da babá</title>
+  <link rel="icon" href="../../../imagens/logo_do_babysite.png" type="image/png">
+  <link rel="stylesheet" href="../../../css/areas/portal.css">
+  <link rel="stylesheet" href="../../../css/areas/agenda.css">
+  <link rel="stylesheet" href="../../../css/pais/perfil_baba/perfil_baba.css">
+</head>
+<body>
+  <main class="profile-page">
+    <header class="topbar">
+      <a class="secondary-button back-to-search" href="../home-pais.html">← Voltar à busca</a>
+      <div>
+        <p class="breadcrumb">PAIS / INÍCIO / <strong>PERFIL DA BABÁ</strong></p>
+        <h1>Perfil da babá</h1>
+      </div>
+      <span class="profile-user-name" id="currentUserName"></span>
+    </header>
+
+    <section class="screen active-screen profile-content">
+      <div class="screen-heading">
+        <div>
+          <p class="eyebrow">PERFIL PROFISSIONAL</p>
+          <h2 id="babysitterProfileName">Carregando perfil...</h2>
+          <p class="muted" id="babysitterProfileStatus"></p>
+        </div>
+      </div>
+
+      <section class="panel babysitter-profile-panel">
+        <div class="babysitter-profile-details">
+          <span class="avatar coral" id="babysitterProfileAvatar">BA</span>
+          <div>
+            <h3 id="babysitterProfileHeading">Babá</h3>
+            <p class="muted" id="babysitterProfileSummary">Localização e tarifa ainda não informadas.</p>
+            <h4>Disponibilidade habitual</h4>
+            <div id="babysitterAvailability"><p class="muted">Carregando disponibilidade...</p></div>
+          </div>
+        </div>
+        <div class="profile-actions">
+          <button class="secondary-button" id="openConversationButton">Conversar com a babá</button>
+          <button class="secondary-button" id="showInterviewForm">Solicitar uma entrevista</button>
+          <button class="primary-button" id="showContractForm">Contratar babá</button>
+        </div>
+      </section>
+
+      <section class="panel request-form-panel" id="interviewRequestPanel" hidden>
+        <div class="panel-heading"><div><p class="eyebrow">SOLICITAÇÃO</p><h3>Solicitar entrevista</h3></div></div>
+        <form id="interviewRequestForm" class="profile-form">
+          <label>Data da entrevista<input name="data_entrevista" type="date" required></label>
+          <label>Horário<input name="hora_entrevista" type="time" required></label>
+          <label>Formato<select name="formato" required><option value="online">Online</option><option value="presencial">Presencial</option></select></label>
+          <label class="wide">Mensagem (opcional)<textarea name="mensagem" rows="3" maxlength="500"></textarea></label>
+          <div class="profile-actions wide"><button class="primary-button" type="submit">Enviar solicitação</button><button class="secondary-button" type="button" data-close-request>Cancelar</button></div>
+        </form>
+      </section>
+
+      <section class="panel request-form-panel" id="contractRequestPanel" hidden>
+        <div class="panel-heading"><div><p class="eyebrow">SOLICITAÇÃO</p><h3>Propor contratação</h3></div></div>
+        <form id="contractRequestForm" class="profile-form">
+          <label>Data de início<input name="data_inicio" type="date" required></label>
+          <label>Data de fim<input name="data_fim" type="date" required></label>
+          <fieldset class="wide schedule-fields"><legend>Dias e horários de trabalho</legend><div id="contractScheduleFields"></div></fieldset>
+          <label class="wide">Mensagem (opcional)<textarea name="mensagem" rows="3" maxlength="500"></textarea></label>
+          <div class="profile-actions wide"><button class="primary-button" type="submit">Enviar solicitação</button><button class="secondary-button" type="button" data-close-request>Cancelar</button></div>
+        </form>
+      </section>
+    </section>
+  </main>
+
+  <div class="toast" id="toast" role="status"></div>
+  <script src="../../../js/pais/perfil_baba/perfil_baba.js"></script>
+</body>
+</html>

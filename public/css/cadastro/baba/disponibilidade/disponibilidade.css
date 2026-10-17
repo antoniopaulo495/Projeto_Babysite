@@ -1,0 +1,18 @@
+.availability-panel { max-width:900px; }
+.availability-field { min-width:0; margin:0; padding:0; border:0; }
+.availability-field legend { color:var(--muted, #68747a); font-size:10px; font-weight:400; letter-spacing:.7px; text-transform:uppercase; margin-bottom:8px; }
+.availability-list { display:grid; gap:7px; }
+.profile-form .availability-row { display:grid; grid-template-columns:18px minmax(110px,1fr) minmax(90px,120px) 24px minmax(90px,120px); align-items:center; gap:9px; padding:7px 9px; background:#fbfaf6; border:1px solid var(--line, #e2ddd4); border-radius:4px; }
+.availability-row > input[type="checkbox"] { width:16px; height:16px; margin:0; padding:0; accent-color:var(--teal); }
+.availability-row > span { color:var(--ink); font-size:11px; letter-spacing:0; text-transform:none; }
+.availability-row > span:nth-of-type(2) { color:var(--muted); text-align:center; }
+.availability-row > input[type="time"] { width:100%; min-width:0; padding:7px; }
+.availability-row > input:disabled { opacity:.55; }
+.availability-error { color:var(--coral-dark); font-size:11px; line-height:1.5; }
+.availability-error:empty { display:none; }
+
+@media (max-width:650px) {
+  .profile-form .availability-row { grid-template-columns:18px minmax(76px,1fr) minmax(72px,1fr) 18px minmax(72px,1fr); gap:5px; padding:7px 5px; }
+  .availability-row > span { font-size:10px; }
+  .availability-row > input[type="time"] { padding:7px 3px; font-size:11px; }
+}

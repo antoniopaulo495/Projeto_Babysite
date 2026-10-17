@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Disponibilidade | Babysite</title>
+  <link rel="icon" href="../../../imagens/logo_do_babysite.png" type="image/png">
+  <link rel="stylesheet" href="../../../css/baba/baba.css">
+  <link rel="stylesheet" href="../../../css/cadastro/baba/disponibilidade/disponibilidade.css">
+</head>
+<body>
+  <div class="portal-shell">
+    <aside class="sidebar">
+      <a class="brand" href="../../home/home.html">
+        <span class="brand-mark"><img src="../../../imagens/logo_do_babysite.png" alt=""></span>
+        <span><strong>baby</strong>site<small>área profissional</small></span>
+      </a>
+      <div class="sidebar-label">NAVEGAÇÃO</div>
+      <nav class="side-nav" aria-label="Menu da babá">
+        <a class="side-link" href="../home-baba.html"><span class="side-icon">⌂</span>Início</a>
+        <a class="side-link" href="../home-baba.html#perfil"><span class="side-icon">◉</span>Meu perfil</a>
+        <a class="side-link active" href="disponibilidade.html" aria-current="page"><span class="side-icon">◷</span>Disponibilidade</a>
+      </nav>
+      <div class="sidebar-bottom">
+        <a href="../home-baba.html" class="back-link">← Voltar para área da babá</a>
+      </div>
+    </aside>
+
+    <main class="workspace">
+      <header class="topbar">
+        <div>
+          <p class="breadcrumb">BABÁ / <strong>DISPONIBILIDADE</strong></p>
+          <h1>Minha disponibilidade</h1>
+        </div>
+      </header>
+      <section class="screen active-screen">
+        <div class="screen-heading">
+          <div>
+            <p class="eyebrow">PERFIL PROFISSIONAL</p>
+            <h2>Dias e horários de trabalho</h2>
+            <p class="muted">Informe quando costuma trabalhar. A família combina entrevistas com você pelo chat; sua disponibilidade não envia nem aceita solicitações.</p>
+          </div>
+        </div>
+
+        <section class="panel availability-panel">
+          <form class="profile-form full" id="availabilityForm">
+            <fieldset class="availability-field wide" id="availabilityFields">
+              <legend>Selecione os dias e horários</legend>
+              <div class="availability-list">
+                <label class="availability-row"><input type="checkbox" data-availability-day="segunda"><span>Segunda-feira</span><input type="time" data-start-time aria-label="Início na segunda-feira" disabled><span>até</span><input type="time" data-end-time aria-label="Fim na segunda-feira" disabled></label>
+                <label class="availability-row"><input type="checkbox" data-availability-day="terca"><span>Terça-feira</span><input type="time" data-start-time aria-label="Início na terça-feira" disabled><span>até</span><input type="time" data-end-time aria-label="Fim na terça-feira" disabled></label>
+                <label class="availability-row"><input type="checkbox" data-availability-day="quarta"><span>Quarta-feira</span><input type="time" data-start-time aria-label="Início na quarta-feira" disabled><span>até</span><input type="time" data-end-time aria-label="Fim na quarta-feira" disabled></label>
+                <label class="availability-row"><input type="checkbox" data-availability-day="quinta"><span>Quinta-feira</span><input type="time" data-start-time aria-label="Início na quinta-feira" disabled><span>até</span><input type="time" data-end-time aria-label="Fim na quinta-feira" disabled></label>
+                <label class="availability-row"><input type="checkbox" data-availability-day="sexta"><span>Sexta-feira</span><input type="time" data-start-time aria-label="Início na sexta-feira" disabled><span>até</span><input type="time" data-end-time aria-label="Fim na sexta-feira" disabled></label>
+                <label class="availability-row"><input type="checkbox" data-availability-day="sabado"><span>Sábado</span><input type="time" data-start-time aria-label="Início no sábado" disabled><span>até</span><input type="time" data-end-time aria-label="Fim no sábado" disabled></label>
+              </div>
+            </fieldset>
+            <p class="availability-error wide" id="availabilityError" role="alert"></p>
+            <button class="primary-button" id="saveAvailability" type="submit">Salvar disponibilidade</button>
+          </form>
+        </section>
+      </section>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status"></div>
+  <script src="../../../js/cadastro/baba/disponibilidade/disponibilidade.js"></script>
+</body>
+</html>
