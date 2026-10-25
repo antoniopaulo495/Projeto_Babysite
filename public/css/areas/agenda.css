@@ -79,6 +79,29 @@
   border-bottom: 0;
 }
 
+.schedule-day.selected {
+  margin: 0 -10px;
+  padding: 10px;
+  border-radius: 8px;
+  background: var(--soft-teal);
+  box-shadow: inset 3px 0 var(--teal);
+}
+
+.schedule-day > label:first-child {
+  font-weight: 600;
+}
+
+.schedule-day.selected > label:first-child {
+  color: var(--teal);
+  font-weight: 700;
+}
+
+.schedule-day input[type="checkbox"] {
+  width: 17px;
+  height: 17px;
+  accent-color: var(--teal);
+}
+
 .schedule-day label {
   display: flex;
   align-items: center;
@@ -449,9 +472,212 @@
   }
 }
 
+  .chat-shell {
+    overflow: hidden;
+    border: 1px solid #e3dfd4;
+    border-radius: 14px;
+    background: var(--paper);
+    box-shadow: 0 18px 48px rgb(23 43 53 / 8%);
+  }
+
+  .conversation-list {
+    background: linear-gradient(180deg, #f8f6f0, #fdfcf9);
+  }
+
+  .conversation-list-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 16px 12px;
+    color: var(--muted);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+  }
+
+  .conversation-list-heading strong {
+    display: grid;
+    width: 22px;
+    height: 22px;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--soft-teal);
+    color: var(--teal);
+    font-size: 10px;
+    letter-spacing: 0;
+  }
+
+  .conversation-empty {
+    padding: 4px 16px 16px;
+  }
+
+  .chat-window {
+    background: radial-gradient(ellipse at top right, #f7eee5 0, #fcfbf8 42%);
+  }
+
+  .chat-top {
+    padding: 17px 20px;
+    background: rgb(255 253 249 / 88%);
+  }
+
+  .chat-top .avatar {
+    width: 44px;
+    height: 44px;
+    flex: 0 0 44px;
+    box-shadow: 0 0 0 4px rgb(233 113 92 / 11%);
+  }
+
+  .chat-actions {
+    flex-wrap: wrap;
+  }
+
+  .chat-actions button {
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 10px;
+  }
+
+  .chat-actions .button-secondary {
+    border: 1px solid var(--line);
+    background: #fff;
+    color: var(--ink);
+  }
+
+  .chat-actions .primary-button {
+    border: 1px solid var(--coral);
+    background: var(--coral);
+    color: #fff;
+  }
+
+  .conversation {
+    min-height: 76px;
+    padding: 13px 15px;
+    border-bottom-color: rgb(229 226 217 / 75%);
+    transition: background-color 0.2s ease;
+  }
+
+  .conversation:hover {
+    background: #fffdf9;
+  }
+
+  .conversation.active {
+    background: #fffdf9;
+    box-shadow: inset 3px 0 var(--coral);
+  }
+
+  .conversation .avatar {
+    flex: 0 0 40px;
+    width: 40px;
+    height: 40px;
+    box-shadow: 0 0 0 3px #fff;
+  }
+
+  .full-chat {
+    min-height: min(620px, calc(100vh - 285px));
+  }
+
+  .large-messages {
+    min-height: 300px;
+    padding: 24px clamp(18px, 4vw, 42px);
+    gap: 14px;
+    scroll-behavior: smooth;
+  }
+
+  .full-chat .message-form {
+    margin: 10px 20px 20px;
+  }
+
+  .full-chat .message-form input {
+    padding: 14px 16px;
+    border-radius: 10px;
+    background: #fff;
+  }
+
+  .full-chat .send-button {
+    width: 46px;
+    border-radius: 10px;
+    box-shadow: 0 5px 12px rgb(233 113 92 / 20%);
+  }
+
+  .conversation-heading {
+    align-items: center;
+  }
+
+  .conversation-heading h2 {
+    margin-bottom: 7px;
+  }
+
+  .conversation-tip {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    max-width: 290px;
+    padding: 15px 17px;
+    border: 1px solid #e7e3d8;
+    border-radius: 12px;
+    background: rgb(255 253 249 / 75%);
+  }
+
+  .conversation-tip > span {
+    color: var(--coral);
+    font-size: 20px;
+  }
+
+  .conversation-tip p {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin: 0;
+  }
+
+  .conversation-tip small {
+    color: var(--muted);
+    font-size: 10px;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 650px) {
+    .conversation-list-heading {
+      display: none;
+    }
+
+    .conversation {
+      border-right: 1px solid var(--line);
+    }
+
+    .conversation-empty {
+      min-width: 100%;
+    }
+
+    .chat-actions button {
+      flex: 1 1 145px;
+    }
+
+    .conversation-heading {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .conversation-tip {
+      max-width: none;
+    }
+
+    .full-chat {
+      min-height: 540px;
+    }
+
+    .large-messages {
+      min-height: 280px;
+    }
+
+    .full-chat .message-form {
+      margin: 10px 12px 12px;
+    }
+  }
+
   .visitor-filters {
     display: grid;
-    grid-template-columns: 1.3fr repeat(3, 1fr);
+    grid-template-columns: 1.3fr repeat(4, 1fr);
     gap: 10px;
   }
 
@@ -531,3 +757,133 @@
       grid-template-columns: 1fr;
     }
   }
+
+.payment-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.payment-summary-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+}
+
+.payment-summary-card span,
+.payment-summary-card small {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.payment-summary-card strong {
+  color: var(--ink);
+  font-size: 23px;
+}
+
+.payment-list {
+  display: grid;
+  gap: 12px;
+}
+
+.payment-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+}
+
+.payment-card-details {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.payment-card-details strong {
+  color: var(--ink);
+}
+
+.payment-card-details small,
+.payment-card-details p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+.payment-card-total {
+  display: flex;
+  flex-shrink: 0;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 7px;
+}
+
+.payment-card-total strong {
+  color: var(--ink);
+  font-size: 21px;
+}
+
+.payment-status {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 9px;
+  border-radius: 20px;
+  background: #f9edcf;
+  color: #a3721b;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.payment-status.paid {
+  background: var(--soft-teal);
+  color: var(--teal);
+}
+
+.payment-card-total .primary-button {
+  margin-top: 4px;
+}
+
+.settings-logout {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+  margin-top: 22px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+}
+
+.settings-logout > div {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.settings-logout small {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+@media (max-width: 650px) {
+  .payment-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .payment-card {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .payment-card-total {
+    align-items: flex-start;
+  }
+}

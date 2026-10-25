@@ -1,11 +1,12 @@
 const express = require('express');
 const path = require('path');
 const adminRoutes = require('./routes/Admin_API');
+const { configurarSeguranca, tratarErroRequisicao } = require('./middleware/Seguranca');
 
 const adminApp = express();
 
-// Middleware para processar JSON
-adminApp.use(express.json());
+configurarSeguranca(adminApp);
+adminApp.use(express.json({ limit: '32kb' }));
 
 adminApp.get('/', (req, res) => res.redirect('/html/admin/login-admin.html'));
 
@@ -15,5 +16,6 @@ adminApp.use('/public', express.static(path.join(__dirname, '../public')));
 
 // Registro das rotas da API Admin
 adminApp.use('/admin/api', adminRoutes);
+adminApp.use(tratarErroRequisicao);
 
 module.exports = adminApp;

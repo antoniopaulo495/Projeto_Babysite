@@ -23,7 +23,7 @@ function isoDateToday() {
 }
 
 async function requestApi(url, options = {}) {
-  const token = localStorage.getItem('babysite_token');
+  const token = BabysiteSession.get('pais');
   const response = await fetch(url, {
     ...options,
     headers: {
@@ -50,6 +50,7 @@ function renderContractScheduleFields() {
   document.querySelectorAll('#contractScheduleFields input[type="checkbox"]').forEach((checkbox) => {
     checkbox.addEventListener('change', () => {
       const row = checkbox.closest('.schedule-day');
+      row.classList.toggle('selected', checkbox.checked);
       row.querySelectorAll('input[type="time"]').forEach((field) => {
         field.disabled = !checkbox.checked;
         field.required = checkbox.checked;
@@ -61,6 +62,12 @@ function renderContractScheduleFields() {
 async function loadBabysitter() {
   const codigoBaba = new URLSearchParams(window.location.search).get('codigo_baba');
   if (!codigoBaba) throw new Error('O perfil solicitado não foi identificado.');
+
+  const conversaId = new URLSearchParams(window.location.search).get('conversa_id');
+  if (conversaId) {
+    document.querySelector('.back-to-search').href =
+      `../home-pais.html?screen=conversas&conversa_id=${encodeURIComponent(conversaId)}`;
+  }
 
   const [perfil, disponibilidade] = await Promise.all([
     requestApi(`/api/babas/${encodeURIComponent(codigoBaba)}`),
@@ -74,10 +81,28 @@ async function loadBabysitter() {
   document.getElementById('babysitterProfileAvatar').textContent = perfil.nome.split(/\s+/).slice(0, 2).map((part) => part[0]).join('').toUpperCase();
   const detalhes = [
     [perfil.municipio, perfil.estado].filter(Boolean).join(' · '),
-    perfil.tarifa_hora == null ? '' : `R$ ${Number(perfil.tarifa_hora).toLocaleString('pt-BR', { minimumFractionDigits: 2 })} por hora`
+    perfil.tarifa_negociavel
+      ? 'Tarifa negociável'
+      : perfil.tarifa_hora == null
+        ? ''
+        : `R$ ${Number(perfil.tarifa_hora).toLocaleString('pt-BR', { minimumFractionDigits: 2 })} por hora`
   ].filter(Boolean);
   document.getElementById('babysitterProfileSummary').textContent =
     detalhes.length ? detalhes.join(' · ') : 'Localização e tarifa ainda não informadas.';
+  const tarifaDisponivel = !perfil.tarifa_negociavel
+    && perfil.tarifa_hora !== null
+    && perfil.tarifa_hora !== undefined
+    && Number.isFinite(Number(perfil.tarifa_hora));
+  document.getElementById('showContractForm').disabled = !tarifaDisponivel;
+  document.getElementById('contractRateNotice').hidden = tarifaDisponivel;
+  document.getElementById('contractRateSummary').textContent = tarifaDisponivel
+    ? `Valor acordado por hora: R$ ${Number(perfil.tarifa_hora).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}. O total será calculado pelo período e horários escolhidos.`
+    : 'A babá ainda não informou uma tarifa fixa.';
+  const paymentNames = { pix: 'Pix', dinheiro: 'Dinheiro', cartao: 'Cartão' };
+  const formasPagamento = (perfil.formas_pagamento || []).map((forma) => paymentNames[forma]).filter(Boolean);
+  document.getElementById('babysitterPaymentMethods').textContent = formasPagamento.length
+    ? `Aceita: ${formasPagamento.join(' · ')}`
+    : 'Formas de pagamento não informadas.';
 
   const target = document.getElementById('babysitterAvailability');
   target.innerHTML = disponibilidade.length
@@ -138,6 +163,15 @@ function bindActions() {
 
   document.getElementById('contractRequestForm').addEventListener('submit', async (event) => {
     event.preventDefault();
+    const tarifaDisponivel = selectedBabysitter
+      && !selectedBabysitter.tarifa_negociavel
+      && selectedBabysitter.tarifa_hora !== null
+      && selectedBabysitter.tarifa_hora !== undefined
+      && Number.isFinite(Number(selectedBabysitter.tarifa_hora));
+    if (!tarifaDisponivel) {
+      showToast('A babá precisa informar uma tarifa fixa antes da contratação.');
+      return;
+    }
     const form = event.currentTarget;
     const formData = new FormData(form);
     const horarios = weekdays.flatMap(([dia]) => {
@@ -164,7 +198,13 @@ function bindActions() {
         })
       });
       form.reset();
-      form.querySelectorAll('input[type="time"]').forEach((field) => { field.disabled = true; });
+      form.querySelectorAll('.schedule-day').forEach((row) => {
+        row.classList.remove('selected');
+        row.querySelectorAll('input[type="time"]').forEach((field) => {
+          field.disabled = true;
+          field.required = false;
+        });
+      });
       document.getElementById('contractRequestPanel').hidden = true;
       showToast('Solicitação enviada. O contrato será criado após a babá aceitar.');
     } catch (error) {
@@ -184,7 +224,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
   bindActions();
 
-  const token = localStorage.getItem('babysite_token');
+  const token = BabysiteSession.get('pais');
   if (!token) {
     window.location.replace('/html/home/home.html');
     return;
@@ -193,11 +233,15 @@ document.addEventListener('DOMContentLoaded', async () => {
   try {
     const profile = await requestApi('/api/sessao');
     if (profile.tipo_usuario !== 'pais') {
-      window.location.replace(profile.tipo_usuario === 'baba' ? '/html/baba/home-baba.html' : '/html/home/home.html');
+      window.location.replace('/html/home/home.html');
       return;
     }
+    BabysiteSession.remember('pais', token);
     document.getElementById('currentUserName').textContent = profile.nome;
     await loadBabysitter();
+    if (new URLSearchParams(window.location.search).get('acao') === 'contratar') {
+      document.getElementById('showContractForm').click();
+    }
   } catch (error) {
     showToast(error.message);
   }

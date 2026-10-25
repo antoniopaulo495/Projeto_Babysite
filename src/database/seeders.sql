@@ -42,6 +42,43 @@ INSERT OR IGNORE INTO baba_disponibilidade (codigo_baba, dia_semana, hora_inicio
 ('BAB100000005', 'terca', '08:00', '17:00'),
 ('BAB100000005', 'quinta', '08:00', '17:00');
 
+UPDATE baba SET formas_pagamento = '["pix","dinheiro"]' WHERE codigo_baba = 'BAB100000001';
+UPDATE baba SET formas_pagamento = '["pix","cartao"]' WHERE codigo_baba = 'BAB100000002';
+UPDATE baba SET formas_pagamento = '["dinheiro","cartao"]' WHERE codigo_baba = 'BAB100000003';
+UPDATE baba SET tarifa_hora = NULL, tarifa_negociavel = 1,
+    formas_pagamento = '["pix"]' WHERE codigo_baba = 'BAB100000004';
+UPDATE baba SET formas_pagamento = '["pix","dinheiro","cartao"]' WHERE codigo_baba = 'BAB100000005';
+UPDATE baba SET diploma_status = 'Aprovada'
+WHERE codigo_baba IN ('BAB100000001', 'BAB100000002', 'BAB100000003', 'BAB100000004', 'BAB100000005');
+
+INSERT INTO contrato (
+    codigo_pais, codigo_baba, data_inicio, data_fim, horarios_json,
+    tarifa_hora, pagamento_status, mensagem, status
+)
+SELECT 'PAI200000001', 'BAB100000001',
+    date('now', 'weekday 1', '-28 days'), date('now', 'weekday 1', '-15 days'),
+    '[{"dia_semana":"segunda","hora_inicio":"08:00","hora_fim":"12:00"},{"dia_semana":"quarta","hora_inicio":"08:00","hora_fim":"12:00"}]',
+    35.00, 'Pendente', 'Contrato de demonstração de pagamento', 'Concluído'
+WHERE NOT EXISTS (
+    SELECT 1 FROM contrato
+    WHERE codigo_pais = 'PAI200000001' AND codigo_baba = 'BAB100000001'
+      AND mensagem = 'Contrato de demonstração de pagamento'
+);
+
+INSERT INTO contrato (
+    codigo_pais, codigo_baba, data_inicio, data_fim, horarios_json,
+    tarifa_hora, pagamento_status, pago_em, mensagem, status
+)
+SELECT 'PAI200000002', 'BAB100000002',
+    date('now', 'weekday 2', '-28 days'), date('now', 'weekday 2', '-15 days'),
+    '[{"dia_semana":"terca","hora_inicio":"09:00","hora_fim":"13:00"},{"dia_semana":"quinta","hora_inicio":"09:00","hora_fim":"13:00"}]',
+    40.00, 'Pago', CURRENT_TIMESTAMP, 'Contrato de demonstração de pagamento', 'Concluído'
+WHERE NOT EXISTS (
+    SELECT 1 FROM contrato
+    WHERE codigo_pais = 'PAI200000002' AND codigo_baba = 'BAB100000002'
+      AND mensagem = 'Contrato de demonstração de pagamento'
+);
+
 INSERT OR IGNORE INTO administrador (usuario_codigo) VALUES ('899000000001');
 
 INSERT OR IGNORE INTO credencial (usuario_codigo, senha_hash) VALUES

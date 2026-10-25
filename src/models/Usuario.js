@@ -18,7 +18,13 @@ const Usuario = {
             const sql = `SELECT u.usuario_codigo, u.nome, u.email_1, u.telefone, c.senha_hash,
                                 CASE WHEN p.codigo_pais IS NOT NULL THEN 'pais' ELSE 'baba' END AS tipo_usuario,
                                 COALESCE(p.codigo_pais, b.codigo_baba) AS codigo_perfil,
-                                b.status_cadastro, b.foto
+                                b.status_cadastro,
+                                b.diploma_status,
+                                b.desativada_ate,
+                                b.desativada_dias,
+                                CASE WHEN b.foto IS NOT NULL THEN 1 ELSE 0 END AS foto_disponivel,
+                                b.tarifa_hora,
+                                b.tarifa_negociavel
                          FROM usuario AS u
                          INNER JOIN credencial AS c ON c.usuario_codigo = u.usuario_codigo
                          LEFT JOIN pais AS p ON p.usuario_codigo = u.usuario_codigo
@@ -32,7 +38,13 @@ const Usuario = {
             const sql = `SELECT u.usuario_codigo, u.nome, u.email_1, u.telefone,
                                 CASE WHEN p.codigo_pais IS NOT NULL THEN 'pais' ELSE 'baba' END AS tipo_usuario,
                                 COALESCE(p.codigo_pais, b.codigo_baba) AS codigo_perfil,
-                                b.status_cadastro, b.foto
+                                b.status_cadastro,
+                                b.diploma_status,
+                                b.desativada_ate,
+                                b.desativada_dias,
+                                CASE WHEN b.foto IS NOT NULL THEN 1 ELSE 0 END AS foto_disponivel,
+                                b.tarifa_hora,
+                                b.tarifa_negociavel
                          FROM usuario AS u
                          LEFT JOIN pais AS p ON p.usuario_codigo = u.usuario_codigo
                          LEFT JOIN baba AS b ON b.usuario_codigo = u.usuario_codigo

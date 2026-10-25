@@ -25,9 +25,15 @@ const db = new sqlite3.Database(dbPath, (err) => {
                 console.log('Tabelas criadas/verificadas com sucesso.');
 
                 migrarPerfilBaba()
+                    .then(() => migrarFormasPagamentoBaba())
+                    .then(() => migrarDataCadastroUsuario())
+                    .then(() => migrarDesativacaoBaba())
                     .then(() => migrarCodigosUsuario())
                     .then(() => migrarSolicitacoesContrato())
+                    .then(() => migrarNotificacoes())
+                    .then(() => migrarPagamentosContrato())
                     .then(() => migrarMotivosAvaliacao())
+                    .then(() => migrarDiplomaBaba())
                     .then(() => {
                         // 2. Executa o Seeders (Inserção dos Dados de Teste)
                         const seedersSql = fs.readFileSync(seedersPath, 'utf8');
@@ -97,7 +103,14 @@ async function migrarPerfilBaba() {
     });
     const existentes = new Set(colunas.map(({ name }) => name));
     const novasColunas = [
+        ['foto_mimetype', 'VARCHAR(50)'],
+        ['foto_atualizada_em', 'TEXT'],
+        ['certidao_caminho', 'TEXT'],
+        ['certidao_nome', 'VARCHAR(255)'],
+        ['certidao_atualizada_em', 'TEXT'],
+        ['certidao_status', "TEXT NOT NULL DEFAULT 'Não enviada'"],
         ['tarifa_hora', 'REAL'],
+        ['tarifa_proxima_alteracao_em', 'TEXT'],
         ['estado', 'CHAR(2)'],
         ['municipio', 'VARCHAR(100)']
     ];
@@ -111,6 +124,59 @@ async function migrarPerfilBaba() {
             await executar(`ALTER TABLE baba DROP COLUMN ${nome}`);
         }
     }
+}
+
+async function migrarFormasPagamentoBaba() {
+    const colunas = await new Promise((resolve, reject) => {
+        db.all('PRAGMA table_info(baba)', [], (erro, rows) => erro ? reject(erro) : resolve(rows));
+    });
+    const existentes = new Set(colunas.map(({ name }) => name));
+    if (!existentes.has('tarifa_negociavel')) {
+        await executar('ALTER TABLE baba ADD COLUMN tarifa_negociavel INTEGER NOT NULL DEFAULT 0');
+    }
+    if (!existentes.has('formas_pagamento')) {
+        await executar("ALTER TABLE baba ADD COLUMN formas_pagamento TEXT NOT NULL DEFAULT '[]'");
+    }
+}
+
+async function migrarDesativacaoBaba() {
+    const colunas = await new Promise((resolve, reject) => {
+        db.all('PRAGMA table_info(baba)', [], (erro, rows) => erro ? reject(erro) : resolve(rows));
+    });
+    const existentes = new Set(colunas.map(({ name }) => name));
+    if (!existentes.has('desativada_ate')) {
+        await executar('ALTER TABLE baba ADD COLUMN desativada_ate TEXT');
+    }
+    if (!existentes.has('desativada_dias')) {
+        await executar('ALTER TABLE baba ADD COLUMN desativada_dias INTEGER');
+    }
+}
+
+async function migrarDiplomaBaba() {
+    const colunas = await new Promise((resolve, reject) => {
+        db.all('PRAGMA table_info(baba)', [], (erro, rows) => erro ? reject(erro) : resolve(rows));
+    });
+    const existentes = new Set(colunas.map(({ name }) => name));
+    const novasColunas = [
+        ['diploma_caminho', 'TEXT'],
+        ['diploma_nome', 'VARCHAR(255)'],
+        ['diploma_atualizado_em', 'TEXT'],
+        ['diploma_status', "TEXT NOT NULL DEFAULT 'Pendente'"]
+    ];
+    for (const [nome, tipo] of novasColunas) {
+        if (!existentes.has(nome)) {
+            await executar(`ALTER TABLE baba ADD COLUMN ${nome} ${tipo}`);
+        }
+    }
+}
+
+async function migrarDataCadastroUsuario() {
+    const colunas = await new Promise((resolve, reject) => {
+        db.all('PRAGMA table_info(usuario)', [], (erro, rows) => erro ? reject(erro) : resolve(rows));
+    });
+    if (colunas.some(({ name }) => name === 'criado_em')) return;
+    await executar('ALTER TABLE usuario ADD COLUMN criado_em DATETIME');
+    await executar('UPDATE usuario SET criado_em = CURRENT_TIMESTAMP WHERE criado_em IS NULL');
 }
 
 async function existeTabela(nome) {
@@ -195,6 +261,99 @@ async function migrarSolicitacoesContrato() {
     } catch (erroMigracao) {
         await executar('ROLLBACK').catch(() => {});
         throw erroMigracao;
+    }
+}
+
+async function migrarPagamentosContrato() {
+    const colunasSolicitacao = await new Promise((resolve, reject) => {
+        db.all('PRAGMA table_info(solicitacao_contrato)', [], (erro, rows) => erro ? reject(erro) : resolve(rows));
+    });
+    const colunasContrato = await new Promise((resolve, reject) => {
+        db.all('PRAGMA table_info(contrato)', [], (erro, rows) => erro ? reject(erro) : resolve(rows));
+    });
+    const solicitacaoExistentes = new Set(colunasSolicitacao.map(({ name }) => name));
+    const contratoExistentes = new Set(colunasContrato.map(({ name }) => name));
+    if (!solicitacaoExistentes.has('tarifa_hora')) {
+        await executar('ALTER TABLE solicitacao_contrato ADD COLUMN tarifa_hora REAL');
+    }
+    if (!contratoExistentes.has('tarifa_hora')) {
+        await executar('ALTER TABLE contrato ADD COLUMN tarifa_hora REAL');
+    }
+    if (!contratoExistentes.has('pagamento_status')) {
+        await executar("ALTER TABLE contrato ADD COLUMN pagamento_status VARCHAR(20) NOT NULL DEFAULT 'Pendente'");
+    }
+    if (!contratoExistentes.has('pago_em')) {
+        await executar('ALTER TABLE contrato ADD COLUMN pago_em TEXT');
+    }
+    await executar(
+        `UPDATE solicitacao_contrato
+         SET tarifa_hora = (SELECT b.tarifa_hora FROM baba b WHERE b.codigo_baba = solicitacao_contrato.codigo_baba)
+         WHERE tarifa_hora IS NULL`
+    );
+    await executar(
+        `UPDATE contrato
+         SET tarifa_hora = (SELECT b.tarifa_hora FROM baba b WHERE b.codigo_baba = contrato.codigo_baba)
+         WHERE tarifa_hora IS NULL`
+    );
+    await executar(
+        `CREATE TRIGGER IF NOT EXISTS atualizar_aviso_pagamento_quitado
+         AFTER UPDATE OF pagamento_status ON contrato
+         WHEN OLD.pagamento_status = 'Pendente' AND NEW.pagamento_status = 'Pago'
+         BEGIN
+             UPDATE notificacao
+             SET titulo = 'Pagamento registrado',
+                 mensagem = 'O responsável registrou o pagamento deste contrato.',
+                 lida_em = COALESCE(lida_em, CURRENT_TIMESTAMP)
+             WHERE contrato_id = NEW.contrato_id AND tipo = 'pagamento_pendente';
+         END`
+    );
+}
+
+async function migrarNotificacoes() {
+    const colunas = await new Promise((resolve, reject) => {
+        db.all('PRAGMA table_info(notificacao)', [], (erro, rows) => erro ? reject(erro) : resolve(rows));
+    });
+    const existentes = new Map(colunas.map(({ name, notnull }) => [name, notnull]));
+    if (!existentes.size || (existentes.has('referencia') && existentes.get('contrato_id') === 0)) return;
+
+    await executar('DROP TRIGGER IF EXISTS atualizar_aviso_pagamento_quitado');
+    await executar('DROP INDEX IF EXISTS idx_notificacao_destinatario');
+    await executar('BEGIN IMMEDIATE');
+    try {
+        await executar('ALTER TABLE notificacao RENAME TO notificacao_legada');
+        await executar(
+            `CREATE TABLE notificacao (
+                notificacao_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                destinatario_tipo VARCHAR(10) NOT NULL CHECK (destinatario_tipo IN ('pais', 'baba')),
+                destinatario_codigo CHAR(12) NOT NULL,
+                tipo VARCHAR(40) NOT NULL,
+                contrato_id INTEGER,
+                referencia VARCHAR(100) NOT NULL,
+                titulo VARCHAR(160) NOT NULL,
+                mensagem TEXT NOT NULL,
+                criada_em DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                lida_em TEXT,
+                UNIQUE (tipo, destinatario_tipo, destinatario_codigo, referencia),
+                FOREIGN KEY (contrato_id) REFERENCES contrato (contrato_id) ON DELETE CASCADE
+            )`
+        );
+        await executar(
+            `INSERT INTO notificacao
+             (notificacao_id, destinatario_tipo, destinatario_codigo, tipo, contrato_id,
+              referencia, titulo, mensagem, criada_em, lida_em)
+             SELECT notificacao_id, destinatario_tipo, destinatario_codigo, tipo, contrato_id,
+                    'contrato:' || contrato_id, titulo, mensagem, criada_em, lida_em
+             FROM notificacao_legada`
+        );
+        await executar('DROP TABLE notificacao_legada');
+        await executar(
+            `CREATE INDEX idx_notificacao_destinatario
+             ON notificacao (destinatario_tipo, destinatario_codigo, criada_em DESC)`
+        );
+        await executar('COMMIT');
+    } catch (erro) {
+        await executar('ROLLBACK').catch(() => {});
+        throw erro;
     }
 }
 

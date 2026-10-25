@@ -31,11 +31,14 @@ const Cadastro = {
                 await executar(
                     `INSERT INTO baba (
                          codigo_baba, cpf, email_1, telefone, nome, usuario_codigo,
-                         tarifa_hora, estado, municipio
-                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                         tarifa_hora, tarifa_negociavel, formas_pagamento, estado, municipio,
+                         diploma_caminho, diploma_nome, diploma_atualizado_em, diploma_status
+                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Pendente')`,
                     [
                         perfilCodigo, dados.cpf, dados.email, dados.telefone, dados.nome, usuarioCodigo,
-                        dados.tarifa_hora, dados.estado, dados.municipio
+                        dados.tarifa_hora, dados.tarifa_negociavel ? 1 : 0,
+                        JSON.stringify(dados.formas_pagamento || []), dados.estado, dados.municipio,
+                        dados.diploma_caminho, dados.diploma_nome, dados.diploma_atualizado_em
                     ]
                 );
                 for (const horario of dados.disponibilidade) {

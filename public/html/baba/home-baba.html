@@ -7,8 +7,10 @@
   <link rel="icon" href="../../imagens/logo_do_babysite.png" type="image/png">
   <link rel="stylesheet" href="../../css/baba/baba.css">
   <link rel="stylesheet" href="../../css/areas/agenda.css">
+  <link rel="stylesheet" href="../../css/areas/notificacoes.css">
+  <link rel="stylesheet" href="../../css/cadastro/baba/disponibilidade/disponibilidade.css">
 </head>
-<body>
+<body data-notification-role="baba">
   <div class="portal-shell">
     <aside class="sidebar" id="sidebar">
       <a class="brand" href="../home/home.html">
@@ -19,12 +21,12 @@
       <div class="sidebar-label">NAVEGAÇÃO</div>
       <nav class="side-nav" aria-label="Menu da babá">
         <button class="side-link active" data-screen="inicio"><span class="side-icon">⌂</span>Início</button>
-        <button class="side-link" data-screen="perfil"><span class="side-icon">◉</span>Meu perfil</button>
-        <a class="side-link" href="disponibilidade/disponibilidade.html"><span class="side-icon">◷</span>Disponibilidade</a>
-        <button class="side-link" data-screen="documentos"><span class="side-icon">▤</span>Certidão<span class="nav-count alert">1</span></button>
+        <button class="side-link" data-screen="conversas"><span class="side-icon">✉</span>Conversas<span class="nav-count" id="conversationRequestNavCount">0</span></button>
         <button class="side-link" data-screen="entrevistas"><span class="side-icon">◫</span>Entrevistas<span class="nav-count" id="interviewCount">0</span></button>
         <button class="side-link" data-screen="contratos"><span class="side-icon">▣</span>Contratos<span class="nav-count" id="contractCount">0</span></button>
-        <button class="side-link" data-screen="conversas"><span class="side-icon">✉</span>Conversas</button>
+        <button class="side-link" data-screen="perfil"><span class="side-icon">◉</span>Meu perfil</button>
+        <button class="side-link" data-screen="pagamentos"><span class="side-icon">R$</span>Pagamentos<span class="nav-count" id="paymentNavCount">0</span></button>
+        <button class="side-link" data-screen="configuracoes"><span class="side-icon">⚙</span>Configurações</button>
       </nav>
 
       <div class="sidebar-bottom">
@@ -45,7 +47,19 @@
           <h1 id="screenTitle">Visão geral</h1>
         </div>
         <div class="topbar-actions">
-          <button class="notification-button" title="Notificações">◌<i>2</i></button>
+          <div class="notification-center">
+            <button class="notification-button" id="notificationToggle" type="button" aria-label="Abrir notificações" aria-expanded="false" aria-controls="notificationPanel">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg>
+              <span class="notification-count" id="notificationCount" hidden>0</span>
+            </button>
+            <section class="notification-panel" id="notificationPanel" aria-labelledby="notificationTitle" hidden>
+              <div class="notification-panel-heading">
+                <div><p class="eyebrow">CAIXA DE ENTRADA</p><h2 id="notificationTitle">Notificações</h2><small id="notificationUnreadSummary">Carregando...</small></div>
+                <button class="notification-mark-all" id="markAllNotificationsRead" type="button">Marcar tudo como lido</button>
+              </div>
+              <div class="notification-list" id="notificationList"><p class="muted">Carregando notificações...</p></div>
+            </section>
+          </div>
           <span class="date-label">06 set 2026</span>
         </div>
       </header>
@@ -56,25 +70,27 @@
             <p class="eyebrow">CENTRAL PROFISSIONAL</p>
             <h2>Seu trabalho, <em>do seu jeito.</em></h2>
             <p class="muted">Organize sua agenda, atualize sua disponibilidade e acompanhe as novas oportunidades.</p>
+            <p class="muted" id="diplomaAccessNotice" hidden></p>
+            <button class="secondary-button" id="reviewDiplomaProfile" type="button" data-screen-target="perfil" hidden>Consultar diploma em Meu perfil</button>
           </div>
           <span class="status-pill pending" id="profileStatus">◉ Perfil em análise</span>
         </div>
 
-        <div class="metrics">
-          <article>
-            <span>Visualizações do perfil</span>
-            <strong>--</strong>
-            <small>Não disponível no banco</small>
-          </article>
-          <article>
+        <div class="metrics service-metrics">
+          <article class="rating-metric">
             <span>Nota média</span>
-            <strong>--</strong>
-            <small>Nenhuma avaliação registrada</small>
+            <div class="rating-value"><strong id="averageRating">--</strong><span id="averageRatingStars" class="rating-stars"></span></div>
+            <small id="ratingCountLabel">Nenhuma avaliação registrada</small>
           </article>
-          <article>
-            <span>Solicitações novas</span>
-            <strong>0</strong>
-            <small>Nenhuma solicitação registrada</small>
+          <article class="request-metric">
+            <span>Entrevistas pendentes</span>
+            <strong id="pendingInterviewMetric">0</strong>
+            <small id="pendingInterviewLabel">Aguardando resposta</small>
+          </article>
+          <article class="request-metric">
+            <span>Contratos pendentes</span>
+            <strong id="pendingContractMetric">0</strong>
+            <small id="pendingContractLabel">Aguardando resposta</small>
           </article>
           <article class="dark-metric">
             <span>Tarifa atual</span>
@@ -83,39 +99,24 @@
           </article>
         </div>
 
-        <div class="content-grid">
-          <section class="panel">
+        <div class="home-dashboard-grid">
+          <section class="panel recent-reviews-panel">
             <div class="panel-heading">
-              <div>
-                <p class="eyebrow">PERFIL PROFISSIONAL</p>
-                <h3>Apresente seu cuidado</h3>
-              </div>
-              <span class="completion">Cadastro básico</span>
+              <div><p class="eyebrow">AVALIAÇÕES</p><h3>Comentários recentes</h3></div>
+              <span class="recent-review-limit">Últimos 5</span>
             </div>
-
-            <form class="profile-form" id="profileForm">
-              <label>Tarifa por hora <div class="input-prefix"><span>R$</span><input type="number" placeholder="Não cadastrada" disabled><span>/hora</span></div></label>
-              <label>Experiência <input type="text" placeholder="Não cadastrada" disabled></label>
-              <label class="wide">Sobre você <textarea rows="3" placeholder="Descrição não cadastrada" disabled></textarea></label>
-              <label class="wide upload-field">
-                <span>Certidão de antecedentes criminais</span>
-                <input id="pdfUpload" type="file" accept="application/pdf" disabled>
-                <span class="upload-box"><b>↑</b><span id="fileName">Nenhum documento registrado<br><small>Documento não disponível no cadastro atual</small></span></span>
-                <small class="file-status" id="fileStatus">Nenhum status de documento registrado</small>
-              </label>
-              <button class="primary-button" type="submit" disabled>Salvar alterações</button>
-            </form>
+            <div id="recentCommentsList" class="recent-comments-list"><p class="muted">Nenhum comentário recebido.</p></div>
           </section>
 
           <section class="panel request-panel">
             <div class="panel-heading">
-              <div>
-                <p class="eyebrow">AÇÕES PENDENTES</p>
-                <h3>Entrevistas</h3>
-              </div>
+              <div><p class="eyebrow">AÇÕES PENDENTES</p><h3>Solicitações novas</h3></div>
               <span class="count-badge" id="pendingRequestCount">0</span>
             </div>
-
+            <div class="request-panel-breakdown" aria-label="Solicitações por tipo">
+              <div><strong id="newInterviewCount">0</strong><span>entrevistas</span></div>
+              <div><strong id="newContractCount">0</strong><span>contratos</span></div>
+            </div>
             <div id="requestPreview"><p class="muted">Nenhuma solicitação pendente.</p></div>
           </section>
         </div>
@@ -125,15 +126,38 @@
         <div class="screen-heading">
           <div>
             <p class="eyebrow">MEU PERFIL</p>
-            <h2>Atualização do cadastro</h2>
-            <p class="muted">Mantenha informações profissionais e a apresentação do seu perfil sempre alinhadas.</p>
+            <h2>Seu perfil profissional</h2>
+            <p class="muted">Revise sua apresentação, localização, disponibilidade, tarifa, certidão e diploma.</p>
           </div>
         </div>
 
+        <section class="profile-hero">
+          <div class="profile-photo-frame">
+            <span id="profileInitials" class="profile-photo-fallback">BA</span>
+            <img id="profilePhoto" class="profile-photo" alt="Foto de perfil da babá" hidden>
+          </div>
+          <div class="profile-hero-info">
+            <p class="eyebrow">BABÁ · PERFIL PROFISSIONAL</p>
+            <h2 id="profileDisplayName">Carregando perfil...</h2>
+            <p id="profileLocationSummary" class="muted">Localização não informada</p>
+            <span class="status-pill pending" id="profileHeroStatus">Perfil em análise</span>
+          </div>
+          <div class="profile-hero-actions">
+            <input id="profilePhotoInput" type="file" accept="image/jpeg,image/png,image/webp" hidden>
+            <button class="secondary-button" id="chooseProfilePhoto" type="button">Alterar foto</button>
+            <small>JPEG, PNG ou WebP até 5 MB</small>
+          </div>
+        </section>
+
         <section class="panel profile-editor">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">LOCALIZAÇÃO</p>
+              <h3>Onde você atende</h3>
+            </div>
+          </div>
           <form class="profile-form full" id="profileEditForm">
             <label>Nome completo <input id="profileName" type="text" value="" readonly></label>
-            <label>Tarifa por hora <input id="profileRateInput" type="number" min="1" max="100000" step="0.01" placeholder="Ex.: 45,00"></label>
             <label>Estado
               <select id="profileStateInput">
                 <option value="">Selecione o estado</option>
@@ -154,29 +178,103 @@
             <button class="primary-button" type="submit">Salvar perfil</button>
           </form>
         </section>
-      </section>
 
-      <section class="screen" data-screen-content="documentos">
-        <div class="screen-heading">
-          <div>
-            <p class="eyebrow">CERTIDÃO</p>
-            <h2>Documentos e validação</h2>
-            <p class="muted">Envie e acompanhe o status da sua certidão de antecedentes antes da publicação do perfil.</p>
+        <section class="panel availability-panel profile-section" id="profileAvailabilityPanel">
+          <div class="panel-heading">
+            <div><p class="eyebrow">DISPONIBILIDADE</p><h3>Seus dias e horários</h3></div>
           </div>
-        </div>
+          <p class="muted">Estes são seus horários habituais, não solicitações de entrevista ou contrato.</p>
+          <form class="profile-form full" id="profileAvailabilityForm">
+            <fieldset class="availability-field wide">
+              <legend>Selecione os dias e horários</legend>
+              <div class="availability-list">
+                <label class="availability-row"><input type="checkbox" data-availability-day="segunda"><span>Segunda-feira</span><input type="time" data-start-time aria-label="Início na segunda-feira" disabled><span>até</span><input type="time" data-end-time aria-label="Fim na segunda-feira" disabled></label>
+                <label class="availability-row"><input type="checkbox" data-availability-day="terca"><span>Terça-feira</span><input type="time" data-start-time aria-label="Início na terça-feira" disabled><span>até</span><input type="time" data-end-time aria-label="Fim na terça-feira" disabled></label>
+                <label class="availability-row"><input type="checkbox" data-availability-day="quarta"><span>Quarta-feira</span><input type="time" data-start-time aria-label="Início na quarta-feira" disabled><span>até</span><input type="time" data-end-time aria-label="Fim na quarta-feira" disabled></label>
+                <label class="availability-row"><input type="checkbox" data-availability-day="quinta"><span>Quinta-feira</span><input type="time" data-start-time aria-label="Início na quinta-feira" disabled><span>até</span><input type="time" data-end-time aria-label="Fim na quinta-feira" disabled></label>
+                <label class="availability-row"><input type="checkbox" data-availability-day="sexta"><span>Sexta-feira</span><input type="time" data-start-time aria-label="Início na sexta-feira" disabled><span>até</span><input type="time" data-end-time aria-label="Fim na sexta-feira" disabled></label>
+                <label class="availability-row"><input type="checkbox" data-availability-day="sabado"><span>Sábado</span><input type="time" data-start-time aria-label="Início no sábado" disabled><span>até</span><input type="time" data-end-time aria-label="Fim no sábado" disabled></label>
+              </div>
+            </fieldset>
+            <p class="availability-error wide" id="profileAvailabilityError" role="alert"></p>
+            <button class="primary-button" id="saveProfileAvailability" type="submit">Salvar disponibilidade</button>
+          </form>
+        </section>
 
-        <div class="document-card">
-          <div class="document-top">
-            <span class="file-tag">PDF</span>
-            <span class="status pending">Não cadastrado</span>
+        <section class="panel profile-section">
+          <div class="panel-heading">
+            <div><p class="eyebrow">TARIFA</p><h3>Seu valor por hora</h3></div>
           </div>
-          <h3>Certidão de antecedentes criminais</h3>
-          <p>Nenhum documento registrado no banco de dados.</p>
-          <div class="document-actions">
-            <button class="secondary-button" disabled>Visualizar PDF</button>
-            <button class="primary-button" disabled>Enviar novamente</button>
+          <div class="rate-summary">
+            <div>
+              <span>Tarifa atual</span>
+              <strong id="profileCurrentRate">--</strong>
+              <small id="rateChangeAvailability">Tarifa não cadastrada</small>
+            </div>
+            <button class="secondary-button" id="openRateEditor" type="button">Alterar tarifa</button>
           </div>
-        </div>
+          <p class="muted">A tarifa deve ficar entre R$ 25,00 e R$ 50,00 por hora. Você poderá alterá-la novamente após 1 segundo.</p>
+        </section>
+
+        <section class="panel profile-section">
+          <div class="panel-heading">
+            <div><p class="eyebrow">PAGAMENTO</p><h3>Como você recebe?</h3></div>
+          </div>
+          <form class="profile-form full" id="paymentMethodsForm">
+            <fieldset class="payment-methods wide">
+              <legend>Selecione as formas de pagamento aceitas</legend>
+              <label><input type="checkbox" name="paymentMethod" value="pix"> Pix</label>
+              <label><input type="checkbox" name="paymentMethod" value="dinheiro"> Dinheiro</label>
+              <label><input type="checkbox" name="paymentMethod" value="cartao"> Cartão</label>
+            </fieldset>
+            <p class="availability-error wide" id="paymentMethodsError" role="alert"></p>
+            <button class="primary-button" type="submit">Salvar formas de pagamento</button>
+          </form>
+        </section>
+
+        <section class="panel profile-section" id="certificatePanel">
+          <div class="panel-heading">
+            <div><p class="eyebrow">DOCUMENTO</p><h3>Certidão de antecedentes criminais</h3></div>
+            <span class="status pending" id="certificateStatus">Não enviada</span>
+          </div>
+          <p class="muted" id="certificateDescription">Envie sua certidão em PDF para mantê-la disponível no perfil.</p>
+          <div class="certificate-info" id="certificateInfo" hidden>
+            <strong id="certificateName"></strong>
+            <small id="certificateUpdatedAt"></small>
+          </div>
+          <div class="certificate-actions">
+            <button class="secondary-button" id="viewCertificate" type="button" hidden>Visualizar certidão</button>
+            <button class="secondary-button danger-action" id="removeCertificate" type="button" hidden>Remover PDF</button>
+            <form id="certificateForm" class="certificate-form">
+              <input id="certificateInput" name="certidao" type="file" accept="application/pdf" hidden>
+              <button class="secondary-button" id="chooseCertificate" type="button">Escolher PDF</button>
+              <span id="certificateFileName">Nenhum arquivo selecionado</span>
+              <button class="primary-button" id="uploadCertificate" type="submit">Enviar certidão</button>
+            </form>
+          </div>
+          <small id="certificateCooldownStatus" class="cooldown-status"></small>
+        </section>
+
+        <section class="panel profile-section" id="diplomaPanel">
+          <div class="panel-heading">
+            <div><p class="eyebrow">QUALIFICAÇÃO PROFISSIONAL</p><h3>Diploma de cuidadora infantil</h3></div>
+            <span class="status pending" id="diplomaStatus">Pendente</span>
+          </div>
+          <p class="muted" id="diplomaDescription">Seu diploma será analisado pela administração. Você poderá receber solicitações de entrevistas e contratos após a aprovação.</p>
+          <div class="certificate-info" id="diplomaInfo" hidden>
+            <strong id="diplomaName"></strong>
+            <small id="diplomaUpdatedAt"></small>
+          </div>
+          <div class="certificate-actions">
+            <button class="secondary-button" id="viewDiploma" type="button" hidden>Visualizar diploma</button>
+            <form id="diplomaForm" class="certificate-form">
+              <input id="diplomaInput" name="diploma" type="file" accept="application/pdf" hidden>
+              <button class="secondary-button" id="chooseDiploma" type="button">Escolher PDF</button>
+              <span id="diplomaFileName">Nenhum arquivo selecionado</span>
+              <button class="primary-button" id="uploadDiploma" type="submit">Enviar diploma</button>
+            </form>
+          </div>
+        </section>
       </section>
 
       <section class="screen" data-screen-content="entrevistas">
@@ -189,8 +287,8 @@
         </div>
 
         <section class="panel">
-          <div class="panel-heading"><div><p class="eyebrow">SOLICITAÇÕES</p><h3>Pedidos aguardando resposta</h3></div></div>
-          <div id="requestList"><p class="muted">Nenhuma solicitação pendente.</p></div>
+          <div class="panel-heading"><div><p class="eyebrow">SOLICITAÇÃO DE ENTREVISTA</p><h3>Pedidos aguardando resposta</h3></div></div>
+          <div id="interviewRequestList" class="pending-request-list"><p class="muted">Nenhuma solicitação de entrevista pendente.</p></div>
         </section>
         <section class="panel">
           <div class="panel-heading"><div><p class="eyebrow">AGENDA</p><h3>Entrevistas aceitas</h3></div></div>
@@ -202,11 +300,38 @@
         <div class="screen-heading">
           <div>
             <p class="eyebrow">CONTRATOS</p>
-            <h2>Contratos aceitos</h2>
-            <p class="muted">Consulte os contratos e finalize o serviço quando o trabalho estiver concluído.</p>
+            <h2>Solicitações e contratos</h2>
+            <p class="muted">Confira os dados enviados pelo responsável e acompanhe os contratos aceitos.</p>
           </div>
         </div>
-        <div id="contractList" class="appointment-list"><p class="muted">Nenhum contrato registrado.</p></div>
+        <section class="panel">
+          <div class="panel-heading"><div><p class="eyebrow">SOLICITAÇÃO DE CONTRATO</p><h3>Pedidos aguardando resposta</h3></div></div>
+          <div id="contractRequestList" class="pending-request-list"><p class="muted">Nenhuma solicitação de contrato pendente.</p></div>
+        </section>
+        <section class="panel">
+          <div class="panel-heading"><div><p class="eyebrow">CONTRATOS ACEITOS</p><h3>Serviços combinados</h3></div></div>
+          <div id="contractList" class="appointment-list"><p class="muted">Nenhum contrato registrado.</p></div>
+        </section>
+      </section>
+
+      <section class="screen" data-screen-content="pagamentos">
+        <div class="screen-heading">
+          <div><p class="eyebrow">PAGAMENTOS</p><h2>Valores dos seus serviços</h2><p class="muted">Acompanhe os valores calculados dos contratos e os pagamentos registrados pelos responsáveis.</p></div>
+        </div>
+        <div class="payment-summary" id="paymentSummary"></div>
+        <div id="paymentList" class="payment-list"><p class="muted">Carregando pagamentos...</p></div>
+      </section>
+
+      <section class="screen" data-screen-content="configuracoes">
+        <div class="screen-heading">
+          <div><p class="eyebrow">CONFIGURAÇÕES</p><h2>Preferências da conta</h2><p class="muted">Gerencie sua sessão no Babysite.</p></div>
+        </div>
+        <section class="panel settings-panel">
+          <div class="settings-logout">
+            <div><strong>Sair da conta</strong><small>Encerre sua sessão do Babysite neste dispositivo.</small></div>
+            <button class="secondary-button" type="button" data-logout>Deslogar</button>
+          </div>
+        </section>
       </section>
 
       <section class="screen" data-screen-content="conversas">
@@ -217,6 +342,15 @@
             <p class="muted">Responda de forma ágil e mantenha a comunicação leve e clara com as famílias.</p>
           </div>
         </div>
+
+        <section class="panel conversation-requests-panel">
+          <div class="panel-heading">
+            <div><p class="eyebrow">PEDIDOS RECEBIDOS</p><h3>Solicitações pendentes</h3></div>
+            <span class="status-pill pending" id="conversationRequestCount">0</span>
+          </div>
+          <p class="muted">Entrevistas e propostas de contratação enviadas pelas famílias aparecem aqui para você responder.</p>
+          <div id="conversationRequestList" class="pending-request-list"><p class="muted">Nenhuma solicitação pendente.</p></div>
+        </section>
 
         <div class="chat-shell full-chat">
           <div class="conversation-list"><p class="muted">Nenhuma conversa registrada.</p></div>
@@ -242,6 +376,81 @@
 
   <div class="toast" id="toast" role="status"></div>
 
+  <dialog class="profile-dialog" id="rateChangeDialog">
+    <button class="dialog-close" type="button" data-close-rate-dialog aria-label="Fechar">×</button>
+    <p class="eyebrow">PERFIL PROFISSIONAL</p>
+    <h2>Alterar tarifa</h2>
+    <p class="muted">Depois de alterar, você poderá mudar esse valor novamente após 1 segundo.</p>
+    <form class="rate-change-form" id="rateChangeForm">
+      <label for="rateInput">Nova tarifa por hora</label>
+      <div class="input-prefix"><span>R$</span><input id="rateInput" type="number" min="25" max="50" step="0.01" required><span>/hora</span></div>
+      <label class="negotiable-rate-option"><input id="rateNegotiable" type="checkbox"> Minha tarifa é negociável</label>
+      <div class="dialog-actions">
+        <button class="secondary-button" type="button" data-close-rate-dialog>Cancelar</button>
+        <button class="primary-button" type="submit">Salvar tarifa</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog class="profile-dialog" id="rateCooldownDialog">
+    <p class="eyebrow">ALTERAÇÃO INDISPONÍVEL</p>
+    <h2>Aguarde o prazo</h2>
+    <p class="muted" id="rateCooldownMessage">Você só pode mudar essa informação a cada 1 segundo.</p>
+    <div class="dialog-actions">
+      <button class="primary-button" type="button" data-close-rate-cooldown>Entendi</button>
+    </div>
+  </dialog>
+
+  <dialog class="profile-dialog certificate-dialog" id="certificatePreviewDialog">
+    <button class="dialog-close" type="button" data-close-certificate-preview aria-label="Fechar">×</button>
+    <p class="eyebrow">CERTIDÃO DE ANTECEDENTES</p>
+    <h2 id="certificatePreviewTitle">Visualizar certidão</h2>
+    <iframe class="certificate-frame" id="certificateFrame" title="Certidão de antecedentes criminais"></iframe>
+  </dialog>
+  <dialog class="profile-dialog certificate-dialog" id="diplomaPreviewDialog">
+    <button class="dialog-close" type="button" data-close-diploma-preview aria-label="Fechar">×</button>
+    <h2 id="diplomaPreviewTitle">Visualizar diploma de cuidadora</h2>
+    <iframe class="certificate-frame" id="diplomaFrame" title="Diploma de cuidadora infantil"></iframe>
+  </dialog>
+
+  <dialog class="profile-dialog" id="interviewReviewDialog">
+    <button class="dialog-close" type="button" data-close-interview-review aria-label="Fechar">×</button>
+    <p class="eyebrow">AVALIAÇÃO DA ENTREVISTA</p>
+    <h2>Avalie a entrevista</h2>
+    <p class="muted">Notas de 1 a 3 serão encaminhadas anonimamente à administração como denúncia.</p>
+    <form id="interviewReviewForm" class="dialog-form">
+      <label>Nota
+        <select name="nota" required>
+          <option value="">Selecione de 1 a 5 estrelas</option>
+          <option value="5">5 estrelas — excelente</option>
+          <option value="4">4 estrelas — muito bom</option>
+          <option value="3">3 estrelas — regular</option>
+          <option value="2">2 estrelas — ruim</option>
+          <option value="1">1 estrela — muito ruim</option>
+        </select>
+      </label>
+      <fieldset id="interviewReviewReasons" class="review-reasons" hidden>
+        <legend>Quais motivos explicam sua nota? Selecione ao menos um.</legend>
+        <label><input type="checkbox" name="motivos" value="Responsável faltou ou cancelou sem aviso"> Responsável faltou ou cancelou sem aviso</label>
+        <label><input type="checkbox" name="motivos" value="Informações sobre a criança ou a rotina estavam incompletas ou divergentes"> Informações sobre a criança ou a rotina estavam incompletas ou divergentes</label>
+        <label><input type="checkbox" name="motivos" value="Condições de trabalho diferentes do que foi combinado"> Condições de trabalho diferentes do que foi combinado</label>
+        <label><input type="checkbox" name="motivos" value="Perguntas ou comentários desrespeitosos ou discriminatórios"> Perguntas ou comentários desrespeitosos ou discriminatórios</label>
+        <label><input type="checkbox" name="motivos" value="Pressão para compartilhar dados pessoais ou tratar fora da plataforma"> Pressão para compartilhar dados pessoais ou tratar fora da plataforma</label>
+        <label><input type="checkbox" name="motivos" value="Condições inadequadas ou inseguras durante a entrevista"> Condições inadequadas ou inseguras durante a entrevista</label>
+        <label><input type="checkbox" name="motivos" value="Comunicação inadequada"> Comunicação inadequada</label>
+        <label><input type="checkbox" name="motivos" value="Outro motivo"> Outro motivo</label>
+        <small id="interviewReviewReasonsHint"></small>
+      </fieldset>
+      <label>Comentário (opcional)<textarea name="comentario" rows="4" maxlength="1000"></textarea></label>
+      <div class="dialog-actions">
+        <button class="secondary-button" type="button" data-close-interview-review>Cancelar</button>
+        <button class="primary-button" type="submit">Enviar avaliação</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="../../js/session.js"></script>
+  <script src="../../js/notifications.js"></script>
   <script src="../../js/baba/baba.js"></script>
 </body>
 </html>

@@ -22,6 +22,7 @@ form.addEventListener('submit', async (event) => {
     account.codigo_perfil = result.codigo_perfil;
     delete account.senha;
     localStorage.setItem('babysite_pais', JSON.stringify(account));
+    localStorage.setItem('babysite_token_pais', result.token);
     localStorage.setItem('babysite_token', result.token);
     window.location.href = '../../../pais/home-pais.html';
   } catch (requestError) {

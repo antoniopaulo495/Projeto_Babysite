@@ -1,0 +1,23 @@
+.user-deactivation-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin: 4px 5px 4px 0;
+}
+
+.user-deactivation-actions select {
+  max-width: 75px;
+  padding: 7px 4px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 10px;
+}
+
+td .status.blocked {
+  display: inline-block;
+  max-width: 260px;
+  white-space: normal;
+  line-height: 1.5;
+}

@@ -14,21 +14,29 @@
     <div class="row justify-content-center">
       <div class="col-12 col-lg-8">
         <div class="card border-0 shadow-sm p-4 p-md-5">
-          <p class="eyebrow">CADASTRO DA BABÁ · 6 DE 7</p>
+          <p class="eyebrow">CADASTRO DA BABÁ · 7 DE 8</p>
           <h1 class="h2 fw-bold">Defina sua tarifa por hora</h1>
           <p class="text-secondary mb-4">Escolha um dos valores sugeridos ou informe a tarifa que você cobra.</p>
           <form id="sitterRateForm">
             <fieldset class="rate-options">
               <legend class="form-label mb-3">Selecione sua tarifa</legend>
-              <label class="rate-option"><input type="radio" name="rateChoice" value="20"><span>R$ 20,00<small>por hora</small></span></label>
               <label class="rate-option"><input type="radio" name="rateChoice" value="25"><span>R$ 25,00<small>por hora</small></span></label>
               <label class="rate-option"><input type="radio" name="rateChoice" value="30"><span>R$ 30,00<small>por hora</small></span></label>
+              <label class="rate-option"><input type="radio" name="rateChoice" value="35"><span>R$ 35,00<small>por hora</small></span></label>
               <label class="rate-option"><input type="radio" name="rateChoice" value="40"><span>R$ 40,00<small>por hora</small></span></label>
+              <label class="rate-option"><input type="radio" name="rateChoice" value="45"><span>R$ 45,00<small>por hora</small></span></label>
               <label class="rate-option"><input type="radio" name="rateChoice" value="50"><span>R$ 50,00<small>por hora</small></span></label>
               <label class="rate-option rate-custom-option"><input type="radio" name="rateChoice" value="custom"><span>Outra tarifa</span></label>
+              <label class="rate-option rate-custom-option"><input type="radio" name="rateChoice" value="negotiable"><span>Negociável</span></label>
             </fieldset>
             <label class="form-label mt-3" for="customRate">Sua tarifa (R$ por hora)</label>
-            <input class="form-control" id="customRate" name="customRate" type="number" min="1" max="100000" step="0.01" placeholder="Ex.: 35,00" disabled>
+            <input class="form-control" id="customRate" name="customRate" type="number" min="25" max="50" step="0.01" placeholder="Ex.: 35,00" disabled>
+            <fieldset class="payment-options mt-4">
+              <legend class="form-label mb-2">Quais formas de pagamento você aceita?</legend>
+              <label><input type="checkbox" name="paymentMethod" value="pix"> Pix</label>
+              <label><input type="checkbox" name="paymentMethod" value="dinheiro"> Dinheiro</label>
+              <label><input type="checkbox" name="paymentMethod" value="cartao"> Cartão</label>
+            </fieldset>
             <p class="text-danger small mt-2 mb-0" id="rateError" role="alert"></p>
             <div class="d-flex justify-content-between mt-4">
               <a class="btn btn-link" href="../disponibilidade/disponibilidade.html">Voltar</a>

@@ -6,7 +6,9 @@
   <title>Babysite | Administração</title>
   <link rel="icon" href="../../../public/imagens/logo_do_babysite.png" type="image/png">
   <link rel="stylesheet" href="../../css/admin/admin.css">
+  <link rel="stylesheet" href="../../css/admin/dashboard.css">
   <link rel="stylesheet" href="../../css/admin/denuncias.css">
+  <link rel="stylesheet" href="../../css/admin/account-status.css">
 </head>
 <body>
   <div class="admin-shell">
@@ -19,13 +21,13 @@
       <nav class="side-nav" aria-label="Menu administrativo">
         <button class="side-link active" data-screen="inicio"><span class="side-icon">⌂</span>Início</button>
         <button class="side-link" data-screen="usuarios"><span class="side-icon">◉</span>Usuários<span class="nav-count" id="navUsers">—</span></button>
-        <button class="side-link" data-screen="certidoes"><span class="side-icon">▤</span>Certidões</button>
+        <button class="side-link" data-screen="certidoes"><span class="side-icon">▤</span>Documentos a verificar<span class="nav-count alert" id="navCertidoes">0</span></button>
         <button class="side-link" data-screen="denuncias"><span class="side-icon">!</span>Denúncias<span class="nav-count" id="navComplaints">0</span></button>
         <button class="side-link" data-screen="relatorios"><span class="side-icon">▥</span>Relatórios</button>
         <button class="side-link" data-screen="configuracoes"><span class="side-icon">⚙</span>Configurações</button>
       </nav>
       <div class="sidebar-bottom">
-        <a href="../../../public/html/home/home.html" class="back-link">← Voltar para o início</a>
+        <a href="../admin/login-admin.html" class="back-link">← Voltar para o início</a>
         <div class="admin-user">
           <span class="user-avatar">AD</span>
           <span><strong id="adminName">Administrador</strong><small id="adminEmail">admin@babysite.com</small></span>
@@ -44,24 +46,29 @@
 
       <section class="screen active-screen" data-screen-content="inicio">
         <div class="welcome-row">
-          <div><p class="eyebrow">BEM-VINDO DE VOLTA</p><h2>O cuidado da rede começa <em>aqui.</em></h2><p class="muted">Indicadores atualizados com os dados cadastrados no Babysite.</p></div>
+          <div><p class="eyebrow">PAINEL DE CONTROLE</p><h2>Visão geral da <em>rede.</em></h2><p class="muted">Acompanhe os cadastros e as denúncias mais recentes do Babysite.</p></div>
           <span class="system-status"><i></i> Sistema operacional</span>
         </div>
-        <div class="metrics">
-          <article><span>Usuários cadastrados</span><strong id="metricUsers">—</strong><small>Babás e responsáveis</small></article>
-          <article><span>Babás ativas</span><strong id="metricActive">—</strong><small>Perfis visíveis na plataforma</small></article>
-          <article><span>Cadastros pendentes</span><strong id="metricPending">—</strong><small class="warning">Aguardam aprovação</small></article>
-          <article class="dark-metric"><span>Responsáveis</span><strong id="metricParents">—</strong><small>Contas cadastradas</small></article>
+        <div class="metrics dashboard-metrics">
+          <article class="dashboard-metric"><span>Total de usuários</span><strong id="metricUsers">—</strong><small>Babás e pais cadastrados</small></article>
+          <article class="dashboard-metric"><span>Babás ativas</span><strong id="metricActive">—</strong><small>Perfis disponíveis</small></article>
+          <article class="dashboard-metric"><span>Pais ativos</span><strong id="metricParents">—</strong><small>Contas cadastradas</small></article>
+          <article class="dashboard-metric dashboard-metric-pending"><span>Cadastros pendentes</span><strong id="metricPending">—</strong><small>Aguardam aprovação</small></article>
         </div>
-        <section class="panel">
-          <p class="eyebrow">DADOS DO SISTEMA</p><h3>Gestão da plataforma</h3>
-          <p class="muted">Consulte os cadastros e gerencie o status das babás na área de usuários. Denúncias de avaliações com nota até 3 são exibidas anonimamente para análise.</p>
-          <button class="link-button" data-screen-target="usuarios">Gerenciar usuários →</button>
-        </section>
+        <div class="dashboard-lists">
+          <section class="panel dashboard-panel">
+            <div class="panel-heading"><div><p class="eyebrow">ATIVIDADE RECENTE</p><h3>Últimos cadastros</h3></div><button class="link-button" data-screen-target="usuarios">Ver usuários →</button></div>
+            <div class="dashboard-user-list" id="recentUsers"><p class="empty-state">Carregando cadastros...</p></div>
+          </section>
+          <section class="panel dashboard-panel">
+            <div class="panel-heading"><div><p class="eyebrow">MODERAÇÃO</p><h3>Denúncias recentes</h3></div><button class="link-button" data-screen-target="denuncias">Ver todas →</button></div>
+            <div class="dashboard-complaint-list" id="recentComplaints"><p class="empty-state">Carregando denúncias...</p></div>
+          </section>
+        </div>
       </section>
 
       <section class="screen" data-screen-content="usuarios">
-        <div class="screen-heading"><div><p class="eyebrow">GESTÃO DA REDE</p><h2>Usuários cadastrados</h2><p class="muted">Dados carregados do banco. É possível ativar, aprovar ou bloquear cadastros de babás.</p></div></div>
+        <div class="screen-heading"><div><p class="eyebrow">GESTÃO DA REDE</p><h2>Usuários cadastrados</h2><p class="muted">Gerencie o acesso das babás: aprove, bane permanentemente ou desative por até 7 dias. Contas desativadas podem ser reativadas pelo administrador a qualquer momento.</p></div></div>
         <section class="panel table-panel">
           <div class="table-toolbar">
             <div class="tabs" role="group" aria-label="Filtrar usuários">
@@ -81,8 +88,8 @@
       </section>
 
       <section class="screen" data-screen-content="certidoes">
-        <div class="screen-heading"><div><p class="eyebrow">SEGURANÇA E CONFIANÇA</p><h2>Certidões de antecedentes</h2><p class="muted">A análise de documentos ficará disponível quando os arquivos forem armazenados no sistema.</p></div></div>
-        <p class="empty-state">Nenhuma certidão está disponível no banco de dados para análise.</p>
+        <div class="screen-heading"><div><p class="eyebrow">SEGURANÇA E CONFIANÇA</p><h2>Documentos a verificar</h2><p class="muted">Certidões de antecedentes e diplomas de cuidadora que aguardam análise.</p></div></div>
+        <div id="certificateQueue" class="certificate-queue"><p class="empty-state">Carregando documentos...</p></div>
       </section>
 
       <section class="screen" data-screen-content="denuncias">
@@ -100,12 +107,38 @@
       </section>
 
       <section class="screen" data-screen-content="configuracoes">
-        <div class="screen-heading"><div><p class="eyebrow">PREFERÊNCIAS</p><h2>Configurações</h2><p class="muted">As preferências administrativas ainda não são persistidas pelo sistema.</p></div></div>
-        <p class="empty-state">Não há configurações administrativas disponíveis no banco de dados.</p>
+        <div class="screen-heading"><div><p class="eyebrow">CONTA E SEGURANÇA</p><h2>Minha conta</h2><p class="muted">Consulte seu acesso e atualize a senha com segurança.</p></div></div>
+        <section class="panel admin-account-panel">
+          <div class="account-email-block">
+            <span>E-mail administrativo</span>
+            <strong id="accountEmail">Carregando...</strong>
+          </div>
+          <p class="password-security-note">A senha atual não pode ser exibida: ela é armazenada protegida e não pode ser recuperada. Para alterá-la, confirme a senha atual abaixo.</p>
+          <form id="adminPasswordForm" class="admin-password-form">
+            <label>Senha atual<input name="senha_atual" type="password" autocomplete="current-password" required></label>
+            <label>Nova senha<input name="nova_senha" type="password" autocomplete="new-password" minlength="8" maxlength="256" required></label>
+            <label>Confirme a nova senha<input name="confirmar_senha" type="password" autocomplete="new-password" minlength="8" maxlength="256" required></label>
+            <button class="primary-button" type="submit">Atualizar senha</button>
+          </form>
+        </section>
       </section>
     </main>
   </div>
   <div class="toast" id="toast" role="status"></div>
+  <dialog class="certificate-review-dialog" id="certificateReviewDialog">
+    <div class="certificate-review-heading">
+      <div><p class="eyebrow">ANÁLISE DE DOCUMENTO</p><h2 id="certificateReviewName">Documento</h2></div>
+      <button class="certificate-dialog-close" id="closeCertificateReview" type="button" aria-label="Fechar">×</button>
+    </div>
+    <iframe id="certificateReviewFrame" title="Documento para análise"></iframe>
+    <div class="certificate-review-actions">
+      <span class="muted" id="certificateReviewStatus"></span>
+      <div>
+        <button class="row-action danger" type="button" data-certificate-decision="Recusada">Recusar</button>
+        <button class="primary-button" type="button" data-certificate-decision="Aprovada">Aprovar documento</button>
+      </div>
+    </div>
+  </dialog>
   <script src="../../js/admin/admin.js"></script>
 </body>
 </html>

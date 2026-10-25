@@ -47,7 +47,8 @@
         <label class="search-field"><span>&#9906;</span><input id="searchInput" type="search" placeholder="Nome da profissional" oninput="applyFilters()"></label>
         <label><span>Estado</span><select id="ufFilter" onchange="updateCityOptions(); applyFilters()"><option value="">Todos os estados</option></select></label>
         <label><span>Município</span><select id="cityFilter" onchange="applyFilters()" disabled><option value="">Todos os municípios</option></select></label>
-        <label><span>Tarifa por hora</span><input id="priceFilter" type="number" min="1" step="0.01" placeholder="Valor máximo (R$)" oninput="applyFilters()"></label>
+        <label><span>Faixa de tarifa</span><select id="priceFilter" onchange="applyFilters()"><option value="">Todas as tarifas</option><option value="25-35">R$ 25 a R$ 35</option><option value="35-50">R$ 35 a R$ 50</option><option value="negotiable">Negociável</option></select></label>
+        <label><span>Forma de pagamento</span><select id="paymentFilter" onchange="applyFilters()"><option value="">Todas as formas</option><option value="pix">Pix</option><option value="dinheiro">Dinheiro</option><option value="cartao">Cartão</option></select></label>
         <fieldset class="availability-filter">
           <legend>Disponibilidade · escolha um ou mais dias</legend>
           <label><input type="checkbox" name="availabilityFilter" value="segunda" onchange="applyFilters()"> Segunda-feira</label>
@@ -96,12 +97,17 @@
       document.getElementById('heroSitterTwo').textContent = list[1] ? initials(list[1].nome) : '--';
       grid.innerHTML = list.length ? list.map((person, index) => {
         const location = [person.municipio, person.estado].filter(Boolean).join(' · ') || 'Localização não informada';
-        const rate = Number.isFinite(Number(person.tarifa_hora)) && person.tarifa_hora !== null
-          ? `R$ ${Number(person.tarifa_hora).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}<small>/hora</small>`
-          : 'Tarifa não informada';
+        const rate = person.tarifa_negociavel
+          ? 'Negociável'
+          : Number.isFinite(Number(person.tarifa_hora)) && person.tarifa_hora !== null
+            ? `R$ ${Number(person.tarifa_hora).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}<small>/hora</small>`
+            : 'Tarifa não informada';
         const days = (person.disponibilidade || []).map((item) => dayNames[item.dia_semana]).filter(Boolean);
         const availability = days.length ? days.join(' · ') : 'Disponibilidade não informada';
-        return `<article class="profile-card" data-profile-name="${escapeHTML(person.nome)}"><div class="profile-cover ${profileColors[index % profileColors.length]}"><span class="profile-initials">${escapeHTML(initials(person.nome))}</span><span class="verified">&#10003; ${escapeHTML(person.status_cadastro)}</span></div><div class="profile-content"><div class="profile-title"><div><h3>${escapeHTML(person.nome)}</h3><p>${escapeHTML(location)}</p></div><span class="profile-rate">${rate}</span></div><div class="profile-tags"><span>Perfil profissional</span><span>${escapeHTML(availability)}</span></div><button class="profile-cta">Ver perfil <span>&#8594;</span></button></div></article>`;
+        const paymentNames = { pix: 'Pix', dinheiro: 'Dinheiro', cartao: 'Cartão' };
+        const payments = (person.formas_pagamento || []).map((method) => paymentNames[method]).filter(Boolean);
+        const paymentText = payments.length ? payments.join(' · ') : 'Forma não informada';
+        return `<article class="profile-card" data-profile-name="${escapeHTML(person.nome)}"><div class="profile-cover ${profileColors[index % profileColors.length]}"><span class="profile-initials">${escapeHTML(initials(person.nome))}</span><span class="verified">&#10003; ${escapeHTML(person.status_cadastro)}</span></div><div class="profile-content"><div class="profile-title"><div><h3>${escapeHTML(person.nome)}</h3><p>${escapeHTML(location)}</p></div><span class="profile-rate">${rate}</span></div><div class="profile-tags"><span>Perfil profissional</span><span>${escapeHTML(availability)}</span><span>${escapeHTML(paymentText)}</span></div><button class="profile-cta">Ver perfil <span>&#8594;</span></button></div></article>`;
       }).join('') : '<div class="empty-state">Nenhuma profissional encontrada.</div>';
       grid.querySelectorAll('[data-profile-name]').forEach((card) => card.addEventListener('click', () => openProfile(card.dataset.profileName)));
     }
@@ -129,18 +135,22 @@
       const query = document.getElementById('searchInput').value.trim().toLocaleLowerCase('pt-BR');
       const state = document.getElementById('ufFilter').value;
       const city = document.getElementById('cityFilter').value;
-      const maxRateValue = document.getElementById('priceFilter').value;
-      const maxRate = maxRateValue === '' ? null : Number(maxRateValue);
+      const rateRange = document.getElementById('priceFilter').value;
+      const paymentMethod = document.getElementById('paymentFilter').value;
       const selectedDays = [...document.querySelectorAll('[name="availabilityFilter"]:checked')].map((field) => field.value);
       renderProfiles(babysitters.filter((person) => {
         const searchMatch = !query || person.nome.toLocaleLowerCase('pt-BR').includes(query);
         const stateMatch = !state || person.estado === state;
         const cityMatch = !city || person.municipio === city;
         const rate = Number(person.tarifa_hora);
-        const rateMatch = maxRate === null || (Number.isFinite(rate) && person.tarifa_hora !== null && rate <= maxRate);
+        const rateMatch = !rateRange
+          || (rateRange === 'negotiable' && person.tarifa_negociavel)
+          || (rateRange === '25-35' && !person.tarifa_negociavel && Number.isFinite(rate) && rate >= 25 && rate <= 35)
+          || (rateRange === '35-50' && !person.tarifa_negociavel && Number.isFinite(rate) && rate >= 35 && rate <= 50);
+        const paymentMatch = !paymentMethod || (person.formas_pagamento || []).includes(paymentMethod);
         const personDays = new Set((person.disponibilidade || []).map((item) => item.dia_semana));
         const availabilityMatch = selectedDays.every((day) => personDays.has(day));
-        return searchMatch && stateMatch && cityMatch && rateMatch && availabilityMatch;
+        return searchMatch && stateMatch && cityMatch && rateMatch && paymentMatch && availabilityMatch;
       }));
     }
     async function loadBabysitters() { const grid = document.getElementById('profileGrid'); try { const response = await fetch('/api/babas'); if (!response.ok) throw new Error('Não foi possível carregar os perfis.'); babysitters = await response.json(); populateLocationFilters(); applyFilters(); } catch (error) { grid.innerHTML = '<div class="empty-state">Não foi possível carregar os perfis agora.</div>'; document.getElementById('resultCount').textContent = 'Perfis indisponíveis'; } }
@@ -148,7 +158,42 @@
     function openProfile(name) { if (currentRole === 'guest') { openAuth('login'); return; } if (currentRole === 'parent') { showView('parent'); selectConversation(name, document.querySelector('.conversation')); } else { showToast(`Perfil de ${name} aberto para visualização.`); } }
     function openAuth(mode) { setAuthMode(mode); openModal('authModal'); }
     function setAuthMode(mode) { authMode = mode; document.getElementById('authTitle').textContent = mode === 'login' ? 'Entre para continuar' : 'Crie sua conta'; document.getElementById('authDescription').textContent = mode === 'login' ? 'Acesse mensagens, perfis completos e agendamentos seguros.' : 'Escolha cuidado com mais informação, confiança e proximidade.'; document.querySelectorAll('.auth-tab').forEach((tab, index) => tab.classList.toggle('active', (mode === 'login' && index === 0) || (mode === 'register' && index === 1))); }
-    async function completeAuth(event) { event.preventDefault(); if (authMode === 'register') { window.location.href = '../cadastro/cadastro.html'; return; } const form = event.currentTarget; const inputs = form.querySelectorAll('input'); try { const response = await fetch('/api/sessao', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: inputs[0].value, senha: inputs[1].value }) }); const result = await response.json(); if (!response.ok) throw new Error(result.erro || 'Não foi possível entrar.'); const role = result.perfil.tipo_usuario; const account = JSON.parse(localStorage.getItem(`babysite_${role}`) || '{}'); account.usuario_codigo = result.perfil.usuario_codigo; account.codigo_perfil = result.perfil.codigo_perfil; account.nome = result.perfil.nome; account.email = result.perfil.email_1; localStorage.setItem(`babysite_${role}`, JSON.stringify(account)); localStorage.setItem('babysite_token', result.token); closeModal('authModal'); window.location.href = role === 'baba' ? '../baba/home-baba.html' : '../pais/home-pais.html'; } catch (error) { showToast(error.message); } }
+    async function completeAuth(event) {
+      event.preventDefault();
+      if (authMode === 'register') { window.location.href = '../cadastro/cadastro.html'; return; }
+      const inputs = event.currentTarget.querySelectorAll('input');
+      try {
+        const response = await fetch('/api/sessao', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: inputs[0].value, senha: inputs[1].value })
+        });
+        const result = await response.json();
+        if (result.status_conta) {
+          if (result.token) BabysiteSession.remember('baba', result.token);
+          closeModal('authModal');
+          const params = new URLSearchParams({ status: result.status_conta });
+          if (result.desativada_ate) params.set('ate', result.desativada_ate);
+          if (result.desativada_dias) params.set('dias', result.desativada_dias);
+          window.location.href = `../baba/acesso-conta.html?${params}`;
+          return;
+        }
+        if (!response.ok) throw new Error(result.erro || 'Não foi possível entrar.');
+        const role = result.perfil.tipo_usuario;
+        const account = JSON.parse(localStorage.getItem(`babysite_${role}`) || '{}');
+        account.usuario_codigo = result.perfil.usuario_codigo;
+        account.codigo_perfil = result.perfil.codigo_perfil;
+        account.nome = result.perfil.nome;
+        account.email = result.perfil.email_1;
+        localStorage.setItem(`babysite_${role}`, JSON.stringify(account));
+        BabysiteSession.remember(role, result.token);
+        localStorage.setItem('babysite_token', result.token);
+        closeModal('authModal');
+        window.location.href = role === 'baba' ? '../baba/home-baba.html' : '../pais/home-pais.html';
+      } catch (error) {
+        showToast(error.message);
+      }
+    }
     function openModal(id) { document.getElementById(id).classList.add('is-open'); }
     function closeModal(id) { document.getElementById(id).classList.remove('is-open'); }
     function submitModal(event, message) { event.preventDefault(); closeModal(event.target.closest('.modal-backdrop').id); showToast(message); }
@@ -165,5 +210,6 @@
     function filterUsers(query) { document.querySelectorAll('#usersBody tr').forEach((row) => { row.hidden = query && !row.textContent.toLowerCase().includes(query.toLowerCase()); }); }
     document.addEventListener('DOMContentLoaded', () => { loadBabysitters(); document.querySelectorAll('.modal-backdrop').forEach((backdrop) => backdrop.addEventListener('click', (event) => { if (event.target === backdrop) closeModal(backdrop.id); })); });
   </script>
+  <script src="../../js/session.js"></script>
 </body>
 </html>

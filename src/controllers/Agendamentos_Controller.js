@@ -12,6 +12,16 @@ const motivosAvaliacao = [
     'Questão de segurança',
     'Outro motivo'
 ];
+const motivosAvaliacaoEntrevista = [
+    'Responsável faltou ou cancelou sem aviso',
+    'Informações sobre a criança ou a rotina estavam incompletas ou divergentes',
+    'Condições de trabalho diferentes do que foi combinado',
+    'Perguntas ou comentários desrespeitosos ou discriminatórios',
+    'Pressão para compartilhar dados pessoais ou tratar fora da plataforma',
+    'Condições inadequadas ou inseguras durante a entrevista',
+    'Comunicação inadequada',
+    'Outro motivo'
+];
 
 function perfilComTipo(req, res, tipo) {
     if (req.sessao.perfil.tipo_usuario !== tipo) {
@@ -81,6 +91,57 @@ const AgendamentosController = {
         executarComResposta(res, () => Agendamentos.listarContratos(req.sessao.perfil), 'Não foi possível carregar os contratos.');
     },
 
+    finalizarEntrevista: async (req, res) => {
+        if (!perfilComTipo(req, res, 'pais')) return;
+        if (!idValido(req.params.id)) return res.status(400).json({ erro: 'Entrevista inválida.' });
+        try {
+            const resultado = await Agendamentos.finalizarEntrevista(
+                Number(req.params.id),
+                req.sessao.perfil.codigo_perfil
+            );
+            if (!resultado) return res.status(404).json({ erro: 'Entrevista não encontrada.' });
+            if (resultado !== true) {
+                return res.status(409).json({ erro: 'Esta entrevista já foi finalizada.' });
+            }
+            res.json({ mensagem: 'Entrevista finalizada. Pais e babá já podem avaliá-la.' });
+        } catch (erro) {
+            console.error('Não foi possível finalizar a entrevista.', erro);
+            res.status(500).json({ erro: 'Não foi possível finalizar a entrevista.' });
+        }
+    },
+
+    avaliarEntrevista: async (req, res) => {
+        if (!perfilComTipo(req, res, 'baba')) return;
+        if (!idValido(req.params.id)) return res.status(400).json({ erro: 'Entrevista inválida.' });
+        const { nota, comentario, motivos } = req.body || {};
+        const motivosInvalidos = !Array.isArray(motivos)
+            || motivos.some((motivo) => !motivosAvaliacaoEntrevista.includes(motivo));
+        if (!Number.isInteger(nota) || nota < 1 || nota > 5
+            || (comentario !== undefined && comentario !== null
+                && (typeof comentario !== 'string' || comentario.trim().length > 1000))
+            || motivosInvalidos
+            || new Set(motivos).size !== motivos.length
+            || (nota <= 3 && motivos.length === 0)
+            || (nota >= 4 && motivos.length > 0)) {
+            return res.status(400).json({ erro: 'Informe uma nota válida. Para notas de 1 a 3, selecione pelo menos um motivo; comentários são opcionais.' });
+        }
+        try {
+            const avaliacao = await Agendamentos.avaliarEntrevista(
+                Number(req.params.id),
+                req.sessao.perfil.codigo_perfil,
+                nota,
+                comentario?.trim() || null,
+                motivos
+            );
+            if (avaliacao === false) return res.status(409).json({ erro: 'Você já avaliou esta entrevista.' });
+            if (!avaliacao) return res.status(404).json({ erro: 'Entrevista finalizada não encontrada para esta babá.' });
+            res.status(201).json({ avaliacao, mensagem: 'Avaliação registrada.' });
+        } catch (erro) {
+            console.error('Não foi possível registrar a avaliação da entrevista.', erro);
+            res.status(500).json({ erro: 'Não foi possível registrar a avaliação da entrevista.' });
+        }
+    },
+
     finalizarContrato: async (req, res) => {
         if (!perfilComTipo(req, res, 'baba')) return;
         if (!idValido(req.params.id)) return res.status(400).json({ erro: 'Contrato inválido.' });
@@ -97,6 +158,37 @@ const AgendamentosController = {
         } catch (erro) {
             console.error('Não foi possível finalizar o contrato.', erro);
             res.status(500).json({ erro: 'Não foi possível finalizar o contrato.' });
+        }
+    },
+
+    listarPagamentos: (req, res) => {
+        if (!['pais', 'baba'].includes(req.sessao.perfil.tipo_usuario)) {
+            return res.status(403).json({ erro: 'Esta ação não está disponível para o seu perfil.' });
+        }
+        executarComResposta(
+            res,
+            () => Agendamentos.listarPagamentos(req.sessao.perfil),
+            'Não foi possível carregar os pagamentos.'
+        );
+    },
+
+    pagarContrato: async (req, res) => {
+        if (!perfilComTipo(req, res, 'pais')) return;
+        if (!idValido(req.params.id)) return res.status(400).json({ erro: 'Pagamento inválido.' });
+        try {
+            const resultado = await Agendamentos.marcarContratoPago(
+                Number(req.params.id),
+                req.sessao.perfil.codigo_perfil,
+                new Date().toISOString()
+            );
+            if (!resultado) return res.status(404).json({ erro: 'Contrato não encontrado.' });
+            if (resultado !== true) {
+                return res.status(409).json({ erro: 'Este contrato já foi marcado como pago.' });
+            }
+            res.json({ mensagem: 'Pagamento registrado na demonstração.' });
+        } catch (erro) {
+            console.error('Não foi possível registrar o pagamento do contrato.', erro);
+            res.status(500).json({ erro: 'Não foi possível registrar o pagamento.' });
         }
     },
 
@@ -172,8 +264,15 @@ const AgendamentosController = {
             return res.status(400).json({ erro: 'Informe a babá, um período válido e pelo menos um dia com horário válido.' });
         }
         try {
-            if (!await Agendamentos.babaAtivaExiste(codigo_baba)) {
+            const babaAtiva = await Agendamentos.babaAtivaExiste(codigo_baba);
+            if (!babaAtiva) {
                 return res.status(404).json({ erro: 'Perfil de babá ativa não encontrado.' });
+            }
+            if (babaAtiva.tarifa_negociavel
+                || babaAtiva.tarifa_hora === null
+                || babaAtiva.tarifa_hora === undefined
+                || !Number.isFinite(Number(babaAtiva.tarifa_hora))) {
+                return res.status(409).json({ erro: 'Esta babá ainda não informou uma tarifa fixa e não pode receber uma proposta de contratação.' });
             }
             const solicitacaoId = await Agendamentos.criarSolicitacaoContrato({
                 codigo_pais: req.sessao.perfil.codigo_perfil,
@@ -181,6 +280,7 @@ const AgendamentosController = {
                 data_inicio,
                 data_fim,
                 horarios,
+                tarifa_hora: Number(babaAtiva.tarifa_hora),
                 mensagem: mensagem?.trim() || null
             });
             res.status(201).json({ solicitacao_id: solicitacaoId, mensagem: 'Solicitação de contratação enviada.' });
@@ -207,6 +307,11 @@ const AgendamentosController = {
         if (!perfilComTipo(req, res, 'baba')) return;
         if (!idValido(req.params.id)) return res.status(400).json({ erro: 'Solicitação inválida.' });
         try {
+            const perfil = await Agendamentos.babaAtivaExiste(req.sessao.perfil.codigo_perfil);
+            if (!perfil || perfil.tarifa_negociavel || perfil.tarifa_hora === null
+                || perfil.tarifa_hora === undefined || !Number.isFinite(Number(perfil.tarifa_hora))) {
+                return res.status(409).json({ erro: 'Atualize sua tarifa fixa antes de aceitar propostas de contratação.' });
+            }
             const contratoId = await Agendamentos.aceitarContrato(Number(req.params.id), req.sessao.perfil.codigo_perfil);
             if (!contratoId) return res.status(404).json({ erro: 'Solicitação não encontrada ou já processada.' });
             res.json({ contrato_id: contratoId, mensagem: 'Contratação aceita e adicionada aos contratos.' });

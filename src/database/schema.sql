@@ -4,7 +4,8 @@ CREATE TABLE IF NOT EXISTS usuario (
     email_1 VARCHAR(300) NOT NULL,
     email_2 VARCHAR(300),
     telefone VARCHAR(20) NOT NULL,
-    nome VARCHAR(100) NOT NULL
+    nome VARCHAR(100) NOT NULL,
+    criado_em DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS pais (
@@ -27,8 +28,23 @@ CREATE TABLE IF NOT EXISTS baba (
     nome VARCHAR(100) NOT NULL,
     usuario_codigo CHAR(12) NOT NULL,
     status_cadastro VARCHAR(20) DEFAULT 'Ativa',
+    desativada_ate TEXT,
+    desativada_dias INTEGER,
     foto TEXT,
+    foto_mimetype VARCHAR(50),
+    foto_atualizada_em TEXT,
+    certidao_caminho TEXT,
+    certidao_nome VARCHAR(255),
+    certidao_atualizada_em TEXT,
+    certidao_status TEXT NOT NULL DEFAULT 'Não enviada',
+    diploma_caminho TEXT,
+    diploma_nome VARCHAR(255),
+    diploma_atualizado_em TEXT,
+    diploma_status TEXT NOT NULL DEFAULT 'Pendente',
     tarifa_hora REAL,
+    tarifa_negociavel INTEGER NOT NULL DEFAULT 0,
+    formas_pagamento TEXT NOT NULL DEFAULT '[]',
+    tarifa_proxima_alteracao_em TEXT,
     estado CHAR(2),
     municipio VARCHAR(100),
     FOREIGN KEY (usuario_codigo) REFERENCES usuario (usuario_codigo)
@@ -88,6 +104,7 @@ CREATE TABLE IF NOT EXISTS solicitacao_contrato (
     data_inicio DATE NOT NULL,
     data_fim DATE NOT NULL,
     horarios_json TEXT NOT NULL DEFAULT '[]',
+    tarifa_hora REAL,
     mensagem TEXT,
     criada_em DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (codigo_pais) REFERENCES pais (codigo_pais) ON DELETE CASCADE,
@@ -101,12 +118,33 @@ CREATE TABLE IF NOT EXISTS contrato (
     data_inicio DATE NOT NULL,
     data_fim DATE NOT NULL,
     horarios_json TEXT NOT NULL DEFAULT '[]',
+    tarifa_hora REAL,
+    pagamento_status VARCHAR(20) NOT NULL DEFAULT 'Pendente',
+    pago_em TEXT,
     mensagem TEXT,
     status VARCHAR(20) NOT NULL DEFAULT 'Ativo',
     criado_em DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (codigo_pais) REFERENCES pais (codigo_pais) ON DELETE CASCADE,
     FOREIGN KEY (codigo_baba) REFERENCES baba (codigo_baba) ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS notificacao (
+    notificacao_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    destinatario_tipo VARCHAR(10) NOT NULL CHECK (destinatario_tipo IN ('pais', 'baba')),
+    destinatario_codigo CHAR(12) NOT NULL,
+    tipo VARCHAR(40) NOT NULL,
+    contrato_id INTEGER,
+    referencia VARCHAR(100) NOT NULL,
+    titulo VARCHAR(160) NOT NULL,
+    mensagem TEXT NOT NULL,
+    criada_em DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    lida_em TEXT,
+    UNIQUE (tipo, destinatario_tipo, destinatario_codigo, referencia),
+    FOREIGN KEY (contrato_id) REFERENCES contrato (contrato_id) ON DELETE CASCADE
+);
+
+CREATE INDEX IF NOT EXISTS idx_notificacao_destinatario
+    ON notificacao (destinatario_tipo, destinatario_codigo, criada_em DESC);
 
 CREATE TABLE IF NOT EXISTS avaliacao_contrato (
     avaliacao_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -118,6 +156,23 @@ CREATE TABLE IF NOT EXISTS avaliacao_contrato (
     motivos_json TEXT NOT NULL DEFAULT '[]',
     criada_em DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (contrato_id) REFERENCES contrato (contrato_id) ON DELETE CASCADE,
+    FOREIGN KEY (codigo_pais) REFERENCES pais (codigo_pais) ON DELETE CASCADE,
+    FOREIGN KEY (codigo_baba) REFERENCES baba (codigo_baba) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS avaliacao_entrevista (
+    avaliacao_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    entrevista_id INTEGER NOT NULL,
+    avaliador_tipo VARCHAR(10) NOT NULL CHECK (avaliador_tipo = 'baba'),
+    codigo_pais CHAR(12),
+    codigo_baba CHAR(12),
+    nota INTEGER NOT NULL CHECK (nota BETWEEN 1 AND 5),
+    comentario TEXT,
+    motivos_json TEXT NOT NULL DEFAULT '[]',
+    criada_em DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (entrevista_id, avaliador_tipo),
+    CHECK (codigo_pais IS NULL AND codigo_baba IS NOT NULL),
+    FOREIGN KEY (entrevista_id) REFERENCES entrevista (entrevista_id) ON DELETE CASCADE,
     FOREIGN KEY (codigo_pais) REFERENCES pais (codigo_pais) ON DELETE CASCADE,
     FOREIGN KEY (codigo_baba) REFERENCES baba (codigo_baba) ON DELETE CASCADE
 );
@@ -160,4 +215,5 @@ CREATE INDEX IF NOT EXISTS idx_entrevista_pais ON entrevista (codigo_pais, data_
 CREATE INDEX IF NOT EXISTS idx_entrevista_baba ON entrevista (codigo_baba, data_entrevista);
 CREATE INDEX IF NOT EXISTS idx_contrato_pais ON contrato (codigo_pais, data_inicio);
 CREATE INDEX IF NOT EXISTS idx_contrato_baba ON contrato (codigo_baba, data_inicio);
+CREATE INDEX IF NOT EXISTS idx_avaliacao_entrevista_moderacao ON avaliacao_entrevista (nota, criada_em);
 CREATE INDEX IF NOT EXISTS idx_mensagem_conversa ON mensagem (conversa_id, mensagem_id);

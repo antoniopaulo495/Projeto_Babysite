@@ -7,8 +7,9 @@
   <link rel="icon" href="../../imagens/logo_do_babysite.png" type="image/png">
   <link rel="stylesheet" href="../../css/areas/portal.css">
   <link rel="stylesheet" href="../../css/areas/agenda.css">
+  <link rel="stylesheet" href="../../css/areas/notificacoes.css">
 </head>
-<body>
+<body data-notification-role="pais">
   <div class="portal-shell">
     <aside class="sidebar" id="sidebar">
       <a class="brand" href="../home/home.html">
@@ -19,15 +20,14 @@
       <div class="sidebar-label">NAVEGAÇÃO</div>
       <nav class="side-nav" aria-label="Menu do responsável">
         <button class="side-link active" data-screen="inicio"><span class="side-icon">⌂</span>Início</button>
-        <button class="side-link" data-screen="perfil"><span class="side-icon">◉</span>Perfil</button>
         <button class="side-link" data-screen="conversas"><span class="side-icon">✉</span>Conversas<span class="nav-count" id="conversationNavCount">0</span></button>
         <button class="side-link" data-screen="entrevistas"><span class="side-icon">◫</span>Entrevistas<span class="nav-count alert">0</span></button>
         <button class="side-link" data-screen="contratos"><span class="side-icon">▣</span>Contratos<span class="nav-count">0</span></button>
+        <button class="side-link" data-screen="pagamentos"><span class="side-icon">R$</span>Pagamentos<span class="nav-count" id="paymentNavCount">0</span></button>
         <button class="side-link" data-screen="configuracoes"><span class="side-icon">⚙</span>Configurações</button>
       </nav>
 
       <div class="sidebar-bottom">
-        <a href="../home/home.html" class="back-link">← Voltar para início</a>
         <div class="profile-user">
           <span class="user-avatar">CO</span>
           <span><strong id="currentUserNameSidebar">Responsável</strong><small id="currentUserEmailSidebar"></small></span>
@@ -44,7 +44,19 @@
           <h1 id="screenTitle">Início</h1>
         </div>
         <div class="topbar-actions">
-          <button class="notification-button" title="Notificações">◌<i>0</i></button>
+          <div class="notification-center">
+            <button class="notification-button" id="notificationToggle" type="button" aria-label="Abrir notificações" aria-expanded="false" aria-controls="notificationPanel">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg>
+              <span class="notification-count" id="notificationCount" hidden>0</span>
+            </button>
+            <section class="notification-panel" id="notificationPanel" aria-labelledby="notificationTitle" hidden>
+              <div class="notification-panel-heading">
+                <div><p class="eyebrow">CAIXA DE ENTRADA</p><h2 id="notificationTitle">Notificações</h2><small id="notificationUnreadSummary">Carregando...</small></div>
+                <button class="notification-mark-all" id="markAllNotificationsRead" type="button">Marcar tudo como lido</button>
+              </div>
+              <div class="notification-list" id="notificationList"><p class="muted">Carregando notificações...</p></div>
+            </section>
+          </div>
           <span class="date-label">06 set 2026</span>
         </div>
       </header>
@@ -76,7 +88,22 @@
             <label class="visitor-search-field">Nome da profissional<input id="visitorSearch" type="search" placeholder="Buscar por nome"></label>
             <label>Estado<select id="visitorStateFilter"><option value="">Todos os estados</option></select></label>
             <label>Município<select id="visitorCityFilter" disabled><option value="">Todos os municípios</option></select></label>
-            <label>Tarifa por hora<input id="visitorRateFilter" type="number" min="1" step="0.01" placeholder="Valor máximo (R$)"></label>
+            <label>Faixa de tarifa
+              <select id="visitorRateFilter">
+                <option value="">Todas as tarifas</option>
+                <option value="25-35">R$ 25 a R$ 35 por hora</option>
+                <option value="35-50">R$ 35 a R$ 50 por hora</option>
+                <option value="negotiable">Negociável</option>
+              </select>
+            </label>
+            <label>Forma de pagamento
+              <select id="visitorPaymentFilter">
+                <option value="">Todas as formas</option>
+                <option value="pix">Pix</option>
+                <option value="dinheiro">Dinheiro</option>
+                <option value="cartao">Cartão</option>
+              </select>
+            </label>
             <fieldset class="visitor-availability-filter">
               <legend>Disponibilidade · escolha um ou mais dias</legend>
               <label><input type="checkbox" name="visitorAvailabilityFilter" value="segunda"> Segunda-feira</label>
@@ -150,7 +177,7 @@
           <div class="panel-heading">
             <div>
               <p class="eyebrow">CONVERSAS</p>
-              <h3>Fale com sua babá</h3>
+              <h3>Uma conversa de cada vez</h3>
             </div>
             <span class="online-label" id="conversationCount">0 conversas</span>
           </div>
@@ -166,7 +193,8 @@
                   <small class="chat-status">Selecione uma conversa</small>
                 </span>
                 <div class="chat-actions">
-                  <button class="button-secondary" data-open-interview-request disabled>Agendar entrevista</button>
+                  <button class="button-secondary" data-open-interview-request disabled>Solicitar entrevista</button>
+                  <button class="primary-button" data-open-contract-request disabled>Contratar babá</button>
                 </div>
               </div>
 
@@ -182,12 +210,13 @@
       </section>
 
       <section class="screen" data-screen-content="conversas">
-        <div class="screen-heading">
+        <div class="screen-heading conversation-heading">
           <div>
-            <p class="eyebrow">CONVERSAS</p>
-            <h2>Mensagens e acompanhamento</h2>
-            <p class="muted">Organize o relacionamento com a babá e siga as próximas etapas da contratação.</p>
+            <p class="eyebrow">UM ESPAÇO PARA SE CONHECER</p>
+            <h2>Converse com tranquilidade</h2>
+            <p class="muted">Tire dúvidas, combine os próximos passos e encontre a parceria ideal para sua família.</p>
           </div>
+          <div class="conversation-tip"><span>✦</span><p><strong>Próximos passos</strong><small>Quando estiverem prontas, solicite uma entrevista ou avance para a contratação.</small></p></div>
         </div>
 
         <div class="chat-shell full-chat">
@@ -201,7 +230,8 @@
                 <small class="chat-status">Selecione uma conversa</small>
               </span>
               <div class="chat-actions">
-                <button class="button-secondary" data-open-interview-request disabled>Agendar entrevista</button>
+                <button class="button-secondary" data-open-interview-request disabled>Solicitar entrevista</button>
+                <button class="primary-button" data-open-contract-request disabled>Contratar babá</button>
               </div>
             </div>
             <div class="messages large-messages"><p class="muted">Selecione uma conversa para ver as mensagens.</p></div>
@@ -240,6 +270,14 @@
         <div id="contractList" class="appointment-list"><p class="muted">Nenhum contrato registrado.</p></div>
       </section>
 
+      <section class="screen" data-screen-content="pagamentos">
+        <div class="screen-heading">
+          <div><p class="eyebrow">PAGAMENTOS</p><h2>Serviços e valores</h2><p class="muted">Confira o custo calculado dos contratos e registre o pagamento na demonstração.</p></div>
+        </div>
+        <div class="payment-summary" id="paymentSummary"></div>
+        <div id="paymentList" class="payment-list"><p class="muted">Carregando pagamentos...</p></div>
+      </section>
+
       <section class="screen" data-screen-content="configuracoes">
         <div class="screen-heading">
           <div>
@@ -254,6 +292,10 @@
           <label class="setting"><span><strong>Receber lembretes de entrevista</strong><small>Envio de lembretes por e-mail e WhatsApp.</small></span><input type="checkbox" checked><i></i></label>
           <label class="setting"><span><strong>Perfil visível para babás</strong><small>Permitir que profissionais vejam suas informações básicas.</small></span><input type="checkbox"><i></i></label>
           <button class="primary-button" data-toast="Configurações salvas.">Salvar alterações</button>
+          <div class="settings-logout">
+            <div><strong>Sair da conta</strong><small>Encerre sua sessão do Babysite neste dispositivo.</small></div>
+            <button class="secondary-button" type="button" data-logout>Deslogar</button>
+          </div>
         </section>
       </section>
     </main>
@@ -265,7 +307,7 @@
     <section class="dialog-panel" role="dialog" aria-modal="true" aria-labelledby="interviewDialogTitle">
       <button class="dialog-close" type="button" data-close-interview-request aria-label="Fechar">×</button>
       <p class="eyebrow">SOLICITAÇÃO PARA <span id="interviewBabysitterName">A BABÁ</span></p>
-      <h2 id="interviewDialogTitle">Agendar entrevista</h2>
+      <h2 id="interviewDialogTitle">Solicitar entrevista</h2>
       <p class="muted">A solicitação será enviada à babá. A entrevista só será adicionada à agenda se ela aceitar.</p>
       <form id="chatInterviewRequestForm" class="dialog-form">
         <label>Data da entrevista<input name="data_entrevista" type="date" required></label>
@@ -288,9 +330,9 @@
   <div class="dialog-backdrop" id="contractReviewDialog" hidden>
     <section class="dialog-panel" role="dialog" aria-modal="true" aria-labelledby="contractReviewTitle">
       <button class="dialog-close" type="button" data-close-contract-review aria-label="Fechar">×</button>
-      <p class="eyebrow">AVALIAÇÃO DO SERVIÇO</p>
+      <p class="eyebrow" id="reviewDialogEyebrow">AVALIAÇÃO DO SERVIÇO</p>
       <h2 id="contractReviewTitle">O que você achou do serviço?</h2>
-      <p class="muted">A babá receberá sua avaliação. Notas de 1 a 3 também serão encaminhadas anonimamente à administração como denúncia.</p>
+      <p class="muted">Sua avaliação será registrada. Notas de 1 a 3 também serão encaminhadas anonimamente à administração como denúncia.</p>
       <form id="contractReviewForm" class="dialog-form">
         <label>Nota
           <select name="nota" required>
@@ -322,6 +364,8 @@
     </section>
   </div>
 
+  <script src="../../js/session.js"></script>
+  <script src="../../js/notifications.js"></script>
   <script src="../../js/pais/pais.js"></script>
 </body>
 </html>

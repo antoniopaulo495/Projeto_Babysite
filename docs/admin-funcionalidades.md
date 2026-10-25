@@ -25,7 +25,7 @@ A interface pode seguir um layout simples e muito parecido com os outros módulo
 
 - Início
 - Usuários
-- Certidões
+- Documentos a verificar
 - Denúncias
 - Relatórios
 - Configurações
@@ -42,7 +42,11 @@ Essa tela deve mostrar um resumo rápido do que está acontecendo na plataforma.
 
 - total de usuários cadastrados;
 - número de babás ativas;
-- número de responsáveis cadastrados;
+- número de pais ativos;
+- quantidade total de usuários cadastrados;
+- cadastros pendentes de aprovação;
+- os cinco cadastros mais recentes;
+- as três denúncias mais recentes;
 - certidões pendentes;
 - denúncias abertas;
 - alertas gerais.
@@ -50,13 +54,14 @@ Essa tela deve mostrar um resumo rápido do que está acontecendo na plataforma.
 ### Exemplo de apresentação
 
 - "1.200 usuários cadastrados"
-- "18 certidões pendentes"
+- "18 documentos pendentes"
 - "5 denúncias aguardando análise"
 - "3 contas pendentes de aprovação"
 
 ### Objetivo
 
 Dar ao administrador uma visão geral e permitir que ele veja rapidamente o que precisa resolver.
+Na tela inicial, os cadastros recentes são ordenados pela data de criação da conta, e as denúncias exibidas são as três avaliações mais recentes com nota até 3. A área de denúncias continua disponível para consultar a lista completa.
 
 ---
 
@@ -72,14 +77,16 @@ Listar todos os usuários cadastrados e verificar o status de cada um.
 - tipo de perfil (babá ou responsável);
 - e-mail;
 - data de cadastro;
-- status (ativo, pendente, bloqueado, banido);
+- status (ativo, pendente, banido ou desativado temporariamente);
 - botão para visualizar perfil ou alterar status.
 
 ### Ações básicas do admin
 
 - aprovar cadastro;
-- bloquear conta;
-- reativar conta;
+- banir permanentemente a babá;
+- desativar a conta da babá por um período de 1 a 7 dias;
+- reativar uma conta desativada a qualquer momento;
+- desbanir e ativar novamente a conta;
 - remover usuário em caso de problema grave;
 - ver informações básicas do perfil.
 
@@ -87,18 +94,18 @@ Listar todos os usuários cadastrados e verificar o status de cada um.
 
 - ativo;
 - pendente;
-- bloqueado;
 - banido.
+- desativado temporariamente, com data de fim.
 
 Essa parte é simples, clara e suficiente para o TCC.
 
 ---
 
-## 3. Certidões
+## 3. Documentos de babás
 
 ### Funcionalidade
 
-Acompanhar documentos enviados pelas babás para verificação.
+Acompanhar certidões de antecedentes e diplomas de cuidadora infantil enviados pelas babás para verificação; aprovar ou recusar cada documento.
 
 ### Tela
 
@@ -154,7 +161,7 @@ Receber e analisar denúncias feitas por usuários.
 - abrir denúncia;
 - analisar o caso;
 - avisar o usuário;
-- bloquear ou manter a conta;
+- banir permanentemente ou desativar por 1 a 7 dias, conforme a gravidade;
 - fechar a ocorrência.
 
 Essa funcionalidade dá ao admin uma real função de moderação, sem precisar de algo muito complexo.
@@ -212,7 +219,7 @@ Não precisa ser algo grande. O mais importante é manter o controle dos process
 1. usuário envia denúncia;
 2. admin recebe na lista;
 3. analisa o caso;
-4. decide se mantém, bloqueia ou encerra;
+4. decide se mantém, bane permanentemente ou aplica desativação temporária;
 5. registra a decisão.
 
 ### Cenário 3: acompanhamento geral
@@ -249,11 +256,11 @@ A interface pode ter um visual simples assim:
 
 - lado esquerdo: menu em lista;
 - centro: cards com números e listas;
-- botões: aprovar, bloquear, analisar, responder;
+- botões: aprovar, banir, desativar por prazo, analisar, responder;
 - status coloridos:
   - verde = ativo/aprovado;
   - amarelo = pendente;
-  - vermelho = bloqueado/denúncia;
+  - vermelho = conta banida/desativada ou denúncia;
   - cinza = inativo.
 
 Esse modelo é fácil de implementar, elegante e funciona muito bem em um TCC.
